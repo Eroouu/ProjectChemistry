@@ -10,36 +10,52 @@ import matplotlib.pyplot as plt
 
 def ChemistryKoef():
     wb = openpyxl.load_workbook(filename='DB.xlsx')
-    # Get a sheet by name
     sheet = wb['1']
     massivF = []
+    x1,y1 = 2, 3
+    array_name_length = []
+    while True:
+        if sheet.cell(row=x1, column=y1).value == None:
+            break
+        try:
+            if int(sheet.cell(row=x1+1, column=y1).value) > int(sheet.cell(row=x1+1, column=y1+1).value):
+                t = []
+                t.append('_'.join(str(sheet.cell(row=x1, column=y1).value).split('_')[:-1]))
+                t.append(int(sheet.cell(row=x1+1, column=y1).value))
+                array_name_length.append(t)
+        except TypeError:
+            t = []
+            t.append('_'.join(str(sheet.cell(row=x1, column=y1).value).split('_')[:-1]))
+            t.append(int(sheet.cell(row=x1 + 1, column=y1).value))
+            array_name_length.append(t)
+        y1 += 1
+    array_name_length = np.array(array_name_length)
 
-    for r in range(14): # проходимся по растворам
+    for r in range(len(array_name_length)): # проходимся по растворам
         massivF.append([])
-        for j in range(100):# цикл для прохода по столбцам
+        for j in range(int(array_name_length[r][1])):# цикл для прохода по столбцам
             massivF[r].append([])
-            print(sheet.cell(row=2, column=j + 3 + r * 100).value)
-            temp = []
-            t = 1210; l = 605
-            f0 = 0;fc = 0; fs = 0; omega = math.pi / l
-            temp.append(0)
-            for i in range(4, 1214):
-                # считываем 1210 элементов
+            temp = [0]
+            start_i = 4
+            i = start_i # это строчка с которой начинаются коэффициенты
+            while sheet.cell(row=i, column=j + 3 + r * 100).value != None:
                 temp.append(sheet.cell(row=i, column=j + 3 + r * 100).value)
-            for i in range(1211):
-                f0 += temp[i]
-            f0 = f0 * 2 / t
-            massivF[r][j].append(f0)
+                i += 1
 
+            fc = 0; fs = 0;
+            t = i - start_i; l = t /2; omega = math.pi / l
+
+            f0 = sum(temp) * 2 / t
+            massivF[r][j].append(f0)
             for k in range(1, 6):
                 # считываем fkc
-                for i in range(1211):
+                for i in range(t + 1):
                     fc += temp[i] * math.cos(omega * i * k)
                 fc = (fc * 2) / t
                 massivF[r][j].append(fc)
                 fc = 0
                 # считываем fks
-                for i in range(1211):
+                for i in range(t+1):
                     fs += temp[i] * math.sin(omega * i * k)
                 fs = (fs * 2) / t
                 massivF[r][j].append(fs)
@@ -47,9 +63,9 @@ def ChemistryKoef():
     # мы считали все элементы f0,f1c,f1s и т.д. в j элемент массива MassivF то есть 11 коэфициентов
     newwb = openpyxl.Workbook()
     ws = newwb.active
-    for r in range(14):
+    for r in range(len(array_name_length)):
         name = ws.cell(row=1 + r * 12, column=1)
-        name.value = sheet.cell(row=2, column=2 + 3 + r * 100).value
+        name.value = array_name_length[r][0]
         for i in range(len(massivF[0])):#количество столбцов
             for j in range(len(massivF[0][i])):
                 b = ws.cell(row=r * 12 + j + 1, column=i + 2)
@@ -57,6 +73,7 @@ def ChemistryKoef():
     if os.path.isfile('KoefDB.xlsx'):
         os.remove('KoefDB.xlsx')
     newwb.save(filename='KoefDB.xlsx')
+    print(f'Programm is done')
 
 def GetMatrix(num):
     wb = openpyxl.load_workbook(filename='KoefDB.xlsx')
@@ -283,16 +300,16 @@ def FindHurstKoefInMatrix(name):
     return 0
 import TackensMethof
 if __name__ == '__main__':
+    ChemistryKoef()
     #matrix = GetMatrix(0)
     #print(RemainsCalculus(x0, matrix, 1, 6))
     #Grapthics(matrix, 1, 2, 0)
     #MakeFileForMatrixWithName(MinimimalPowell(matrix, 11, 1, 19), "Solution №0 columns 1-18")
     #MakeFileForMatrixWithName(MinimimalPowell(matrix, 11, 20, 30), "Solution №0 columns 20-29")
     #MakeFileForMatrixWithName(MinimimalPowell(matrix, 11, 33, 50), "Solution №0 columns 33-49")
-    #ChemistryKoef()
     #MakeFromLongFileMatrix('№2_HCl 1500mV 1 Vs.txt')
     #FindHurstKoefInMatrix('Examplefractal_s2_4000mv_2000mvs_С_ДИАГРАММАМИ.xlsx')
     #TackensMethof.FindTackensKoefInMatrix('Examplefractal_s2_4000mv_2000mvs_С_ДИАГРАММАМИ.xlsx', 40, 0.001)
     #print(TackensMethof.FindCInVector([1.3, 1.32, 1.35, 1.38, 1.43], 2, 0.01))
-    PI = 3.1415926
-    print(0.5 * math.sin( -42786 / 1500 + 2207.9 * math.cos(PI/ 180 * 8)) )
+    #PI = 3.1415926
+    #print(0.5 * math.sin( -42786 / 1500 + 2207.9 * math.cos(PI/ 180 * 8)) )
