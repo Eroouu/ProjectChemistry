@@ -6,8 +6,6 @@ from scipy.optimize import minimize
 import numpy as np
 import matplotlib.pyplot as plt
 
-
-
 def ChemistryKoef():
     wb = openpyxl.load_workbook(filename='DB.xlsx')
     sheet = wb['1']
@@ -83,10 +81,8 @@ def GetMatrix(num):
         tempEl = []
         for i in range(1, 12):
             tempEl.append(sheet.cell(row=i + num * 12, column=j + 2).value)
-            # print(sheet.cell(row=i, column=j + 2).value)
         massivF.append(tempEl)
     matrixKoef = np.array(massivF)
-    #print(MatrixKoef)
     #в массиве MatrixKoef 2 коэффициента 1-ый это номер столбца в базе, 2ой- номер строки
     return matrixKoef
 
@@ -106,14 +102,12 @@ def AmountOfNorms(x,matrixKoef,a,b):
 def MinimimalOriginal(matrixKoef,q,a, b):
     x0 = np.array([0.11 for i in range(q * q)])
     res = scipy.optimize.minimize(AmountOfNorms, x0, args=(matrixKoef, a, b))
-    #print(res.values())
     print(res.fun)
     return res.x
 
 def MinimimalPowell(matrixKoef,q, a, b):
     x0 = np.array([0.11 for i in range(q * q)])
     res = scipy.optimize.minimize(AmountOfNorms, x0, method='Powell', options={'maxiter': 300}, args=(matrixKoef, a, b))
-    #print(res.values())
     print(res.fun)
     return [res.x, res.fun]
 
@@ -163,7 +157,7 @@ def MakeFileForMatrixWithName(x,name):
         os.remove(str(name) + '.xlsx')
     newwb.save(filename=str(name) + '.xlsx')
 
-def ArrayOfFuncValues(array_koef):
+def ArrayOfFuncValues(array_koef):#надо убрать зависимость от t!
     massiv = []
     t = 1210; l = 605; omega = math.pi / l
     for i in range(1211):
@@ -177,7 +171,7 @@ def ArrayOfFuncValues(array_koef):
         massiv.append(temp)
     return massiv
 
-def TakeColumnFromBD(number_of_solution, column_number):
+def TakeColumnFromBD(number_of_solution, column_number):#надо убрать зависимость от t!
     wb = openpyxl.load_workbook(filename='DB.xlsx')
     sheet = wb['1']
     massiv = []
@@ -185,7 +179,7 @@ def TakeColumnFromBD(number_of_solution, column_number):
         massiv.append(float(sheet.cell(row=i + 4, column=column_number + 3 + number_of_solution * 100).value))
     return massiv
 
-def Grapthics(matrix, a, b, number):
+def Grapthics(matrix, a, b, number):#надо убрать зависимость от t!
     n = [i for i in range(1211)]
     fig = plt.figure()
     ax = fig.gca()
@@ -283,7 +277,7 @@ def HurstKoef(array):
     H = math.log(R / s, 10) / math.log(len(array), 10)
     return H
 
-def FindHurstKoefInMatrix(name):
+def FindHurstKoefInMatrix(name):#надо убрать зависимость от t!
     matrix = []
     wb = openpyxl.load_workbook(filename=name)
     sheet = wb['Fract_4000']
