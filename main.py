@@ -6,8 +6,8 @@ from scipy.optimize import minimize
 import numpy as np
 import matplotlib.pyplot as plt
 
-def ChemistryKoef():
-    wb = openpyxl.load_workbook(filename='DB.xlsx')
+def ChemistryKoef(name_of_file, new_file_name):
+    wb = openpyxl.load_workbook(filename=name_of_file)
     sheet = wb['1']
     massivF = []
     x1,y1 = 2, 3
@@ -68,12 +68,12 @@ def ChemistryKoef():
             for j in range(len(massivF[0][i])):
                 b = ws.cell(row=r * 12 + j + 1, column=i + 2)
                 b.value = massivF[r][i][j]
-    if os.path.isfile('KoefDB.xlsx'):
-        os.remove('KoefDB.xlsx')
-    newwb.save(filename='KoefDB.xlsx')
+    if os.path.isfile(new_file_name):
+        os.remove(new_file_name)
+    newwb.save(filename=new_file_name)
     print(f'Programm is done')
 
-def GetMatrix(num):
+def GetMatrix(num):#надо убрать зависимость от t!
     wb = openpyxl.load_workbook(filename='KoefDB.xlsx')
     sheet = wb['Sheet']
     massivF = []
@@ -86,7 +86,7 @@ def GetMatrix(num):
     #в массиве MatrixKoef 2 коэффициента 1-ый это номер столбца в базе, 2ой- номер строки
     return matrixKoef
 
-def AmountOfNorms(x,matrixKoef,a,b):
+def AmountOfNorms(x,matrixKoef,a,b):#надо убрать зависимость от t!
     q = 11
     sum = 0
     for i in range(a, b):  # по количеству норм
@@ -124,7 +124,7 @@ def RemainsCalculus(x, matrixKoef, a, b):
         sum += normkv
     return sum
 
-def MakeFileForSolutionNumber(x,number,q):
+def MakeFileForSolutionNumber(x,number,q):#надо убрать зависимость от t!
     newwb = openpyxl.Workbook()
     ws = newwb.active
     name = ws.cell(row=1, column=1)
@@ -139,7 +139,7 @@ def MakeFileForSolutionNumber(x,number,q):
         os.remove('KoefX' + str(number) + '.xlsx')
     newwb.save(filename='KoefX' + str(number) + '.xlsx')
 
-def MakeFileForMatrixWithName(x,name):
+def MakeFileForMatrixWithName(x,name):#надо убрать зависимость от t!
     newwb = openpyxl.Workbook()
     ws = newwb.active
     temp_name = ws.cell(row=1, column=1)
@@ -210,9 +210,7 @@ def make_file(x,matrix_cycle, name):
         os.remove(str(name) + '.xlsx')
     newwb.save(filename=str(name) + '.xlsx')
 
-
-
-def MakeFromLongFileMatrix(name):
+def MakeFromLongFileMatrix(name):#функция для создания из длмнного файла matrix
     matrix = [[]]
     temp_array = []
     temp_time =[]
@@ -228,73 +226,71 @@ def MakeFromLongFileMatrix(name):
                     if len(matrix[0]) <= len(temp_array):
                         matrix[0] = temp_time
                 actual_cycle = line.split()[1]
-                temp_time = []
-                temp_array = []
+                temp_time, temp_array = [], []
                 r += 1
             elif line.find("Step") == 0:
                 actual_step = line.split()[1]
                 matrix_cycle.append(str(actual_cycle) + '-C-' + str(actual_step) )
             elif line != '' and line != '\n' and line.find("Time (s),          Potential (V),         Current (A)") == -1 and line.find("Physical Cycle") == -1:
-                #print(line)
                 temp_array.append(line.split()[2])
                 temp_time.append(line.split()[0])
     a = len(name.split('/'))
     make_file(matrix, matrix_cycle, 'Example' + name.split('/')[a - 1] )
     return 0
+
 def make_file_hurst(x,  name):
     newwb = openpyxl.Workbook()
     ws = newwb.active
-    sum = 0.005
     for i in range(len(x)):
-        a = ws.cell(row=2, column=2 + i)
-        b = ws.cell(row=1, column=2 + i)
-        b.value = i;
-        a.value = x[i]
+        ws.cell(row=2, column=1 + i).value = x[i]
+        ws.cell(row=1, column=1 + i).value = i
     if os.path.isfile(str(name) + '.xlsx'):
         os.remove(str(name) + '.xlsx')
     newwb.save(filename=str(name) + '.xlsx')
 def HurstKoef(array):
-    avr_ksi = 0.
+    avr_ksi = sum(array)/ len(array)
+    s = (sum(np.square(array - avr_ksi))/len(array))**0.5
+    sumt = 0
     for i in range(len(array)):
-        avr_ksi += array[i]
-    avr_ksi /= len(array)
-    s = 0.
-    for i in range(len(array)):
-        s += (array[i] - avr_ksi)**2
-    s /= len(array)
-    s = pow(s, 0.5)
-    M_t = 0
-    sum = 0
-    for i in range(len(array)):
-        sum += (array[i] - avr_ksi)
+        sumt += (array[i] - avr_ksi)
         if (i == 0):
-            m_t = sum
-        if (sum >= M_t ):
-            M_t = sum
-        if(sum <= m_t):
-            m_t = sum
+            m_t, M_t = sumt, sumt
+        elif (sumt >= M_t ):
+            M_t = sumt
+        elif(sumt <= m_t):
+            m_t = sumt
     R = M_t - m_t
     H = math.log(R / s, 10) / math.log(len(array), 10)
     return H
 
-def FindHurstKoefInMatrix(name):#надо убрать зависимость от t!
+def FindHurstKoefInMatrix(name, x_start, y_start):#надо убрать зависимость от t!
     matrix = []
     wb = openpyxl.load_workbook(filename=name)
-    sheet = wb['Fract_4000']
-    for j in range(2,331):
+    sheet = wb['1']
+    x, y = x_start, y_start
+    while sheet.cell(row=x, column=y).value != None:
+        xt = x
         tempEl = []
-        for i in range(3,1623):
-            tempEl.append(sheet.cell(row=i, column=j).value)
+        while sheet.cell(row=xt, column=y).value != None:
+            tempEl.append(float(sheet.cell(row=xt, column=y).value))
+            xt += 1
+        tempEl = np.array(tempEl)
         matrix.append(tempEl)
+        y += 1
     matrix_hurst = []
     for i in range(len(matrix)):
-        temp_arr = HurstKoef(matrix[i])
-        matrix_hurst.append(temp_arr)
+        matrix_hurst.append(HurstKoef(matrix[i]))
     make_file_hurst(matrix_hurst, 'HurstColumn' + name)
+    print(f'find h koef for file {name}')
     return 0
 import TackensMethof
 if __name__ == '__main__':
-    ChemistryKoef()
+    ChemistryKoef('DB.xlsx', 'KoefDB2.xlsx')
+    FindHurstKoefInMatrix('Алюминий 1 серия.xlsx', 2, 2)
+    FindHurstKoefInMatrix('Алюминий 2 серия.xlsx', 2, 2)
+    FindHurstKoefInMatrix('Трубчатый перколяционный кластер 1 первое насыщение носа.xlsx', 2, 2)
+    FindHurstKoefInMatrix('Трубчатый перколяционный кластер 2 второе последовательно после 1го насыщение носа.xlsx', 2, 2)
+    #ChemistryKoef('Алюминий 1 серия.xlsx', 'KoefAl1.xlsx')
     #matrix = GetMatrix(0)
     #print(RemainsCalculus(x0, matrix, 1, 6))
     #Grapthics(matrix, 1, 2, 0)
