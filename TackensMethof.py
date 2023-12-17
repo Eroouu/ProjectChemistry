@@ -23,34 +23,23 @@ def HowManyElementsInG(vector, n, e):
             array_ind_g[i] = 1
     #print(array_ind_g)
     return int(sum(array_ind_g))
-def FindCInVector(vector, n, e, proc_decriese, counte):
+
+def FindSpecFunkValue(vector, n, e):
+    C_n_e = HowManyElementsInG(vector, n, e)
+    if (C_n_e == 0):
+        print("C = 0")
+        rez = 0
+    else:
+        rez = log(C_n_e) / (n - log(e))
+    return rez
+
+def FindManyValuesInVector(vector, n, e, proc_decriese, counte):
     array = []
     for i in range(counte):
-        print(i)
-        C_n_e = HowManyElementsInG(vector, n, e)
-        if (C_n_e == 0):
-            print("C = 0")
-            rez = 0
-        else:
-            rez = log(C_n_e) / (n - log(e))
-        array.append(rez)
+        array.append(FindSpecFunkValue(vector, n, e))
         e *= (1-proc_decriese )
     return array
 
-def FindC_n_e(matrix, n, e):
-    rezult_vector = []
-    for i in range(len(matrix[0])):
-        temp_el = []
-        for j in range(len(matrix)):
-            temp_el.append(matrix[j][i])
-        C_n_e = HowManyElementsInG(temp_el, n, e)
-        if (C_n_e == 0):
-            print("C = 0")
-            otv = 0
-        else:
-            otv = log(C_n_e) / (n - log(e))
-        rezult_vector.append(otv)
-    return rezult_vector
 def FindTackensKoefInMatrix(name, n, e):
     matrix = []
     wb = openpyxl.load_workbook(filename=name)

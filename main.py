@@ -6,6 +6,7 @@ from scipy.optimize import minimize
 import numpy as np
 import matplotlib.pyplot as plt
 import TackensMethof as tm
+from mpl_toolkits.mplot3d import Axes3D
 
 def ChemistryKoef(name_of_file, new_file_name):
     wb = openpyxl.load_workbook(filename=name_of_file)
@@ -282,7 +283,7 @@ def FindHurstKoefInMatrix(name, x_start, y_start):#надо убрать зав�
     matrix_hurst = []
     for i in range(len(matrix)):
         matrix_hurst.append(HurstKoef(matrix[i]))
-    print(f'count of nember in Cne = {TackensMethof.HowManyElementsInG(np.array(matrix[0]), n, epsilon)}')
+    print(f'count of nember in Cne = {tk.HowManyElementsInG(np.array(matrix[0]), n, epsilon)}')
     make_file(matrix_hurst, 'HurstColumn' + name)
     print(f'find h koef for file {name}')
     return matrix[0]
@@ -312,13 +313,20 @@ def ex3(name,x, y, n, epsilon, ind_start, ind_end):
         x += 1
     matrix = np.array(matrix)
     #print(f'number of el in Cne in {name} = {tm.HowManyElementsInG(matrix[ind_start: ind_end], n, epsilon)}')
-    numb = 30
-    array = tm.FindCInVector(matrix[ind_start: ind_end], n, epsilon, 0.15, numb)
-    #print(array)
-    plt.plot(np.arange(0, numb), array,linestyle='dashed')
+    numb = 20
+    #array = tm.FindManyValuesInVector(matrix[ind_start: ind_end], n, epsilon, 0.15, numb)
+
+    fig = plt.figure(figsize=(15, 10))
+    ax = plt.axes(projection="3d")
+    ax = fig.add_subplot(projection= "3d")
+    for i in range(int(numb/3)):
+        for j in range(numb):
+            nt = n + i * 10
+            et = epsilon * 0.85 ** j
+            ax.scatter(nt, et, tm.FindSpecFunkValue(matrix[ind_start: ind_end], nt, et))
+    ax.set_xlabel("n")
+    ax.set_ylabel("e")
     plt.title('grapthics for Cne')
-    plt.xlabel('уменьшение e')
-    plt.ylabel('итоговое число')
     plt.show()
 if __name__ == '__main__':
     ex3('Алюминий 1 серия.xlsx', 2, 2, 10, 0.01, 7400, 9850)
