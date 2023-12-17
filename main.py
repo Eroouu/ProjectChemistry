@@ -5,6 +5,7 @@ import scipy
 from scipy.optimize import minimize
 import numpy as np
 import matplotlib.pyplot as plt
+import TackensMethof as tm
 
 def ChemistryKoef(name_of_file, new_file_name):
     wb = openpyxl.load_workbook(filename=name_of_file)
@@ -73,8 +74,8 @@ def ChemistryKoef(name_of_file, new_file_name):
     newwb.save(filename=new_file_name)
     print(f'Programm is done')
 
-def GetMatrix(num):#надо убрать зависимость от t!
-    wb = openpyxl.load_workbook(filename='KoefDB.xlsx')
+def GetMatrix(name, num):#надо убрать зависимость от t!
+    wb = openpyxl.load_workbook(filename= name )
     sheet = wb['Sheet']
     massivF = []
     for j in range(100):
@@ -238,7 +239,7 @@ def MakeFromLongFileMatrix(name):#функция для создания из д
     make_file(matrix, matrix_cycle, 'Example' + name.split('/')[a - 1] )
     return 0
 
-def make_file_hurst(x,  name):
+def make_file(x,  name):
     newwb = openpyxl.Workbook()
     ws = newwb.active
     for i in range(len(x)):
@@ -247,6 +248,7 @@ def make_file_hurst(x,  name):
     if os.path.isfile(str(name) + '.xlsx'):
         os.remove(str(name) + '.xlsx')
     newwb.save(filename=str(name) + '.xlsx')
+
 def HurstKoef(array):
     avr_ksi = sum(array)/ len(array)
     s = (sum(np.square(array - avr_ksi))/len(array))**0.5
@@ -280,20 +282,19 @@ def FindHurstKoefInMatrix(name, x_start, y_start):#надо убрать зав�
     matrix_hurst = []
     for i in range(len(matrix)):
         matrix_hurst.append(HurstKoef(matrix[i]))
-    make_file_hurst(matrix_hurst, 'HurstColumn' + name)
+    print(f'count of nember in Cne = {TackensMethof.HowManyElementsInG(np.array(matrix[0]), n, epsilon)}')
+    make_file(matrix_hurst, 'HurstColumn' + name)
     print(f'find h koef for file {name}')
+    return matrix[0]
+
+def ex1():
+    a1 = FindHurstKoefInMatrix('Алюминий 1 серия.xlsx', 2, 2)
+    a2 = FindHurstKoefInMatrix('Алюминий 2 серия.xlsx', 2, 2)
+    a3 = FindHurstKoefInMatrix('Трубчатый перколяционный кластер 1 первое насыщение носа.xlsx', 2, 2)
+    a4 = FindHurstKoefInMatrix('Трубчатый перколяционный кластер 2 второе последовательно после 1го насыщение носа.xlsx', 2, 2)
     return 0
-import TackensMethof
-if __name__ == '__main__':
-    ChemistryKoef('DB.xlsx', 'KoefDB2.xlsx')
-    FindHurstKoefInMatrix('Алюминий 1 серия.xlsx', 2, 2)
-    FindHurstKoefInMatrix('Алюминий 2 серия.xlsx', 2, 2)
-    FindHurstKoefInMatrix('Трубчатый перколяционный кластер 1 первое насыщение носа.xlsx', 2, 2)
-    FindHurstKoefInMatrix('Трубчатый перколяционный кластер 2 второе последовательно после 1го насыщение носа.xlsx', 2, 2)
-    #ChemistryKoef('Алюминий 1 серия.xlsx', 'KoefAl1.xlsx')
-    #matrix = GetMatrix(0)
-    #print(RemainsCalculus(x0, matrix, 1, 6))
-    #Grapthics(matrix, 1, 2, 0)
+def ex2():
+    #ChemistryKoef('DB.xlsx', 'KoefDB2.xlsx')
     #MakeFileForMatrixWithName(MinimimalPowell(matrix, 11, 1, 19), "Solution №0 columns 1-18")
     #MakeFileForMatrixWithName(MinimimalPowell(matrix, 11, 20, 30), "Solution №0 columns 20-29")
     #MakeFileForMatrixWithName(MinimimalPowell(matrix, 11, 33, 50), "Solution №0 columns 33-49")
@@ -301,5 +302,25 @@ if __name__ == '__main__':
     #FindHurstKoefInMatrix('Examplefractal_s2_4000mv_2000mvs_С_ДИАГРАММАМИ.xlsx')
     #TackensMethof.FindTackensKoefInMatrix('Examplefractal_s2_4000mv_2000mvs_С_ДИАГРАММАМИ.xlsx', 40, 0.001)
     #print(TackensMethof.FindCInVector([1.3, 1.32, 1.35, 1.38, 1.43], 2, 0.01))
-    #PI = 3.1415926
-    #print(0.5 * math.sin( -42786 / 1500 + 2207.9 * math.cos(PI/ 180 * 8)) )
+    return 0
+def ex3(name,x, y, n, epsilon, ind_start, ind_end):
+    wb = openpyxl.load_workbook(filename=name)
+    sheet = wb['1']
+    matrix = []
+    while sheet.cell(row=x, column=y).value != None:
+        matrix.append(float(sheet.cell(row=x, column=y).value))
+        x += 1
+    matrix = np.array(matrix)
+    #print(f'number of el in Cne in {name} = {tm.HowManyElementsInG(matrix[ind_start: ind_end], n, epsilon)}')
+    numb = 30
+    array = tm.FindCInVector(matrix[ind_start: ind_end], n, epsilon, 0.15, numb)
+    #print(array)
+    plt.plot(np.arange(0, numb), array,linestyle='dashed')
+    plt.title('grapthics for Cne')
+    plt.xlabel('уменьшение e')
+    plt.ylabel('итоговое число')
+    plt.show()
+if __name__ == '__main__':
+    ex3('Алюминий 1 серия.xlsx', 2, 2, 10, 0.01, 7400, 9850)
+
+
