@@ -7,7 +7,7 @@ import numpy as np
 import matplotlib.pyplot as plt
 import TackensMethof as tm
 from mpl_toolkits.mplot3d import Axes3D
-
+from sklearn.decomposition import PCA
 def ChemistryKoef(name_of_file, new_file_name):
     wb = openpyxl.load_workbook(filename=name_of_file)
     sheet = wb['1']
@@ -356,14 +356,17 @@ def TryToFindMC(name,x ,y, k, ind_start, ind_end):
     wb = openpyxl.load_workbook(filename=name)
     sheet = wb['1']
     time_series = []
+    time_array = []
     while sheet.cell(row=x, column=y).value != None:
         time_series.append(float(sheet.cell(row=x, column=y).value))
+        time_array.append(float(sheet.cell(row=x, column=y-1).value))
         x += 1
     matrix = np.array(time_series[ind_start:ind_end])
-    tm.MCM(matrix, k)
+    matrix_t = np.array(time_array[ind_start:ind_end])
+    tm.MCM(matrix,matrix_t, k)
 if __name__ == '__main__':
     #ex3('Алюминий 2 серия.xlsx', 2, 2, 20, 0.005, 5500, 8500)
     #ex4('Алюминий 2 серия.xlsx', 2, 2, 20, 0.0009, 5500, 8500)
-    TryToFindMC('Алюминий 2 серия.xlsx', 2, 2, 2900, 5500, 8500)
+    TryToFindMC('Алюминий 2 серия.xlsx', 2, 2, 1600, 5500, 8500)
 
 

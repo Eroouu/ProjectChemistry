@@ -9,6 +9,8 @@ import matplotlib.pyplot as plt
 import seaborn as sns
 from numpy import linalg as LA
 import pandas as pd
+import sklearn
+from sklearn.decomposition import PCA
 
 def HowManyElementsInG(vector, n, e):
     array_ind_g = np.zeros(len(vector))
@@ -42,7 +44,7 @@ def FindManyValuesInVector(vector, n, e, proc_decriese, counte):
         e *= (1-proc_decriese )
     return array
 
-def MCM(time_series, k):
+def MCM(time_series,time_array,  k):
     el_count = len(time_series) - k + 1
     data = np.array([time_series[i:i + k] for i in range(el_count)])
     Q = np.cov(data)
@@ -51,9 +53,21 @@ def MCM(time_series, k):
     #plt.show()
 
     eigenvalues, eigenvectors = LA.eig(Q)
-    df = pd.DataFrame(eigenvalues)
-    print(df)
+    #df = pd.DataFrame(eigenvalues)
+    #print(df)
     x = np.array([i + 1 for i in range(el_count)])
     plt.plot(x, np.log(eigenvalues))
     plt.show()
+    print(eigenvectors)
+    useful_eigen_values = eigenvectors[:4]
+    new_time_series = []
+    for i in range(el_count):
+        temp = [np.dot(useful_eigen_values[j], data[i][0:el_count]) for j in range(len(useful_eigen_values))]
+        print(temp)
+        new_time_series.append(temp)
+    rez_series = np.array(new_time_series)
+    #print(rez_series)
+    #pca = PCA(n_components=4)
+    #XPCAreduced = pca.fit_transform(np.transpose([time_series ,time_array]))
+    #print(XPCAreduced)
     return 0
