@@ -352,8 +352,18 @@ def ex4(name,x, y, n, epsilon, ind_start, ind_end):
     plt.plot(et, rez_arr[4], 'o', label='n = 80')
     plt.legend(bbox_to_anchor=(1.05, 1), loc=2, borderaxespad=0.)
     plt.show()
+def TryToFindMC(name,x ,y, k, ind_start, ind_end):
+    wb = openpyxl.load_workbook(filename=name)
+    sheet = wb['1']
+    time_series = []
+    while sheet.cell(row=x, column=y).value != None:
+        time_series.append(float(sheet.cell(row=x, column=y).value))
+        x += 1
+    matrix = np.array(time_series[ind_start:ind_end])
+    tm.MCM(matrix, k)
 if __name__ == '__main__':
     #ex3('Алюминий 2 серия.xlsx', 2, 2, 20, 0.005, 5500, 8500)
-    ex4('Алюминий 2 серия.xlsx', 2, 2, 20, 0.0009, 5500, 8500)
+    #ex4('Алюминий 2 серия.xlsx', 2, 2, 20, 0.0009, 5500, 8500)
+    TryToFindMC('Алюминий 2 серия.xlsx', 2, 2, 2990, 5500, 8500)
 
 

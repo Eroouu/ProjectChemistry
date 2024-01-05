@@ -6,7 +6,8 @@ import scipy
 from scipy.optimize import minimize
 import numpy as np
 import matplotlib.pyplot as plt
-
+import seaborn as sns
+from numpy import linalg as LA
 
 def HowManyElementsInG(vector, n, e):
     array_ind_g = np.zeros(len(vector))
@@ -40,15 +41,15 @@ def FindManyValuesInVector(vector, n, e, proc_decriese, counte):
         e *= (1-proc_decriese )
     return array
 
-def FindTackensKoefInMatrix(name, n, e):
-    matrix = []
-    wb = openpyxl.load_workbook(filename=name)
-    sheet = wb['Fract_4000']
-    for j in range(2,331):
-        tempEl = []
-        for i in range(3,1623):
-            tempEl.append(sheet.cell(row=i, column=j).value)
-        matrix.append(tempEl)
-    otv = FindC_n_e(matrix, n, e)
-    print(otv)
+def MCM(time_series, k):
+    el_count = len(time_series) - k + 1
+    data = np.array([time_series[i:i + k] for i in range(el_count)])
+    Q = np.cov(data, bias=True)
+    names = [i for i in range(el_count)]
+    #sns.heatmap(Q, annot=True, fmt='g', xticklabels=names, yticklabels=names)
+    #plt.show()
+    eigenvalues, eigenvectors = LA.eig(Q)
+    x = np.array([i + 1 for i in range(el_count)])
+    plt.plot(x, eigenvalues)
+    plt.show()
     return 0
