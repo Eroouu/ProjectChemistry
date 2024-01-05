@@ -8,6 +8,7 @@ import numpy as np
 import matplotlib.pyplot as plt
 import seaborn as sns
 from numpy import linalg as LA
+import pandas as pd
 
 def HowManyElementsInG(vector, n, e):
     array_ind_g = np.zeros(len(vector))
@@ -44,11 +45,14 @@ def FindManyValuesInVector(vector, n, e, proc_decriese, counte):
 def MCM(time_series, k):
     el_count = len(time_series) - k + 1
     data = np.array([time_series[i:i + k] for i in range(el_count)])
-    Q = np.cov(data, bias=True)
+    Q = np.cov(data)
     names = [i for i in range(el_count)]
     #sns.heatmap(Q, annot=True, fmt='g', xticklabels=names, yticklabels=names)
     #plt.show()
+
     eigenvalues, eigenvectors = LA.eig(Q)
+    df = pd.DataFrame(eigenvalues)
+    print(df)
     x = np.array([i + 1 for i in range(el_count)])
     plt.plot(x, np.log(eigenvalues))
     plt.show()
