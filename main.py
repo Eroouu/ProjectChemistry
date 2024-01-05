@@ -313,22 +313,47 @@ def ex3(name,x, y, n, epsilon, ind_start, ind_end):
         x += 1
     matrix = np.array(matrix)
     #print(f'number of el in Cne in {name} = {tm.HowManyElementsInG(matrix[ind_start: ind_end], n, epsilon)}')
-    numb = 20
+    numn = 3
+    nume = 7
     #array = tm.FindManyValuesInVector(matrix[ind_start: ind_end], n, epsilon, 0.15, numb)
 
     fig = plt.figure(figsize=(15, 10))
-    ax = plt.axes(projection="3d")
     ax = fig.add_subplot(projection= "3d")
-    for i in range(int(numb/3)):
-        for j in range(numb):
-            nt = n + i * 10
-            et = epsilon * 0.85 ** j
-            ax.scatter(nt, et, tm.FindSpecFunkValue(matrix[ind_start: ind_end], nt, et))
+    nt = np.array([n + i * 15 for i in range(numn)])
+    et = np.array([epsilon * 0.85 ** j for j in range(nume)])
+    rez_arr = np.array([[tm.FindSpecFunkValue(matrix[ind_start: ind_end], nt[i], et[j]) for j in range(nume)] for i in range(int(numn))])
+    #print(rez_arr)
+    #print(rez_arr.ravel())
+    #ax.scatter(nt, et, rez_arr.ravel())
+    ax.scatter(np.repeat(nt, nume), np.tile(et, numn), rez_arr.ravel())
     ax.set_xlabel("n")
     ax.set_ylabel("e")
     plt.title('grapthics for Cne')
     plt.show()
+
+def ex4(name,x, y, n, epsilon, ind_start, ind_end):
+    wb = openpyxl.load_workbook(filename=name)
+    sheet = wb['1']
+    matrix = []
+    while sheet.cell(row=x, column=y).value != None:
+        matrix.append(float(sheet.cell(row=x, column=y).value))
+        x += 1
+    matrix = np.array(matrix)
+    numn = 5
+    nume = 25
+    fig = plt.figure(figsize=(12, 7))
+    nt = np.array([n + i * 15 for i in range(numn)])
+    et = np.array([epsilon * 0.85 ** j for j in range(nume)])
+    rez_arr = np.array([[tm.FindSpecFunkValue(matrix[ind_start: ind_end], nt[i], et[j]) for j in range(nume)] for i in range(int(numn))])
+    plt.plot(et, rez_arr[0], 'r', label='n = 20')
+    plt.plot(et, rez_arr[1], 'g', label='n = 35')
+    plt.plot(et, rez_arr[2], 'b', label='n = 50')
+    plt.plot(et, rez_arr[3], 'y', label='n = 65')
+    plt.plot(et, rez_arr[4], 'o', label='n = 80')
+    plt.legend(bbox_to_anchor=(1.05, 1), loc=2, borderaxespad=0.)
+    plt.show()
 if __name__ == '__main__':
-    ex3('Алюминий 1 серия.xlsx', 2, 2, 10, 0.01, 7400, 9850)
+    #ex3('Алюминий 2 серия.xlsx', 2, 2, 20, 0.005, 5500, 8500)
+    ex4('Алюминий 2 серия.xlsx', 2, 2, 20, 0.0009, 5500, 8500)
 
 
