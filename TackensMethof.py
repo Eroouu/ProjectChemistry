@@ -50,6 +50,6 @@ def MCM(time_series, k):
     #plt.show()
     eigenvalues, eigenvectors = LA.eig(Q)
     x = np.array([i + 1 for i in range(el_count)])
-    plt.plot(x, eigenvalues)
+    plt.plot(x, np.log(eigenvalues))
     plt.show()
     return 0
