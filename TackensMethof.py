@@ -43,27 +43,39 @@ def FindManyValuesInVector(vector, n, e, proc_decriese, counte):
         array.append(FindSpecFunkValue(vector, n, e))
         e *= (1-proc_decriese )
     return array
-
+def The_broken_cane_method(C, k):
+    # реализация метода сломаной трости
+    eigenvalues, eigenvectors = LA.eig(C)
+    trC = np.trace(C)
+    t = [1 / i for i in range(1, k + 1)]
+    l = np.array([sum(t[i:]) / k for i in range(k)])
+    dfdata = {
+        'lambda/trC': eigenvalues / trC,
+        'li': l,
+        'сравнение 1 > 2': np.greater(eigenvalues / trC, l)
+    }
+    df = pd.DataFrame(dfdata)
+    print('\n', df)
+    return 0
 def MCM(time_series,time_array,  k):
     N = len(time_series)
     series_mean = np.mean(time_series)
     el_count = len(time_series) - k + 1
     data = np.array([time_series[i:i + k] for i in range(el_count)])
-
     npQ = np.cov(data)
-    Q = np.zeros((k, k))
+    C = np.zeros((k, k))
     for i in range(k):
         ti = time_series[i:i + N - k + 1]
-        Q[i,i] = np.dot(ti - series_mean, ti - series_mean)
+        C[i,i] = np.dot(ti - series_mean, ti - series_mean)
         for j in range(i+1,k):
             tj = time_series[j:j + N - k + 1]
-            Q[i, j] = np.dot(ti - series_mean, tj - series_mean)
-            Q[j, i] = Q[i, j]
-    #plt.figure(figsize=(9, 7), dpi=80)
-    #sns.heatmap(Q, annot=True, fmt='g', xticklabels=[i for i in range(k)], yticklabels=[i for i in range(k)])
-    #plt.title(f"Матрица ковариации для k = {k}", fontsize=18)
-    #plt.show()
-    eigenvalues, eigenvectors = LA.eig(Q)
+            C[i, j] = np.dot(ti - series_mean, tj - series_mean)
+            C[j, i] = C[i, j]
+    plt.figure(figsize=(9, 7), dpi=80)
+    sns.heatmap(C, annot=True, fmt='g', xticklabels=[i for i in range(k)], yticklabels=[i for i in range(k)])
+    plt.title(f"Матрица ковариации для k = {k}", fontsize=18)
+    plt.show()
+    eigenvalues, eigenvectors = LA.eig(C)
     print(f'собственные значения матрицы для k={k}')
     df = pd.DataFrame(eigenvalues)
     print(df)
@@ -71,4 +83,5 @@ def MCM(time_series,time_array,  k):
     plt.plot(x, np.log(eigenvalues))
     plt.title(f"График значений собственных чисел для k = {k}", fontsize=14)
     plt.show()
+    The_broken_cane_method(C, k)
     return 0
