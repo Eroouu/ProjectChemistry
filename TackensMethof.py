@@ -45,29 +45,30 @@ def FindManyValuesInVector(vector, n, e, proc_decriese, counte):
     return array
 
 def MCM(time_series,time_array,  k):
+    N = len(time_series)
+    series_mean = np.mean(time_series)
     el_count = len(time_series) - k + 1
     data = np.array([time_series[i:i + k] for i in range(el_count)])
-    Q = np.cov(data)
-    names = [i for i in range(el_count)]
-    #sns.heatmap(Q, annot=True, fmt='g', xticklabels=names, yticklabels=names)
-    #plt.show()
 
+    npQ = np.cov(data)
+    Q = np.zeros((k, k))
+    for i in range(k):
+        ti = time_series[i:i + N - k + 1]
+        Q[i,i] = np.dot(ti - series_mean, ti - series_mean)
+        for j in range(i+1,k):
+            tj = time_series[j:j + N - k + 1]
+            Q[i, j] = np.dot(ti - series_mean, tj - series_mean)
+            Q[j, i] = Q[i, j]
+    #plt.figure(figsize=(9, 7), dpi=80)
+    #sns.heatmap(Q, annot=True, fmt='g', xticklabels=[i for i in range(k)], yticklabels=[i for i in range(k)])
+    #plt.title(f"Матрица ковариации для k = {k}", fontsize=18)
+    #plt.show()
     eigenvalues, eigenvectors = LA.eig(Q)
-    #df = pd.DataFrame(eigenvalues)
-    #print(df)
-    x = np.array([i + 1 for i in range(el_count)])
+    print(f'собственные значения матрицы для k={k}')
+    df = pd.DataFrame(eigenvalues)
+    print(df)
+    x = np.array([i + 1 for i in range(k)])
     plt.plot(x, np.log(eigenvalues))
+    plt.title(f"График значений собственных чисел для k = {k}", fontsize=14)
     plt.show()
-    print(eigenvectors)
-    useful_eigen_values = eigenvectors[:4]
-    new_time_series = []
-    for i in range(el_count):
-        temp = [np.dot(useful_eigen_values[j], data[i][0:el_count]) for j in range(len(useful_eigen_values))]
-        print(temp)
-        new_time_series.append(temp)
-    rez_series = np.array(new_time_series)
-    #print(rez_series)
-    #pca = PCA(n_components=4)
-    #XPCAreduced = pca.fit_transform(np.transpose([time_series ,time_array]))
-    #print(XPCAreduced)
     return 0

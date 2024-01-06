@@ -363,10 +363,10 @@ def TryToFindMC(name,x ,y, k, ind_start, ind_end):
         x += 1
     matrix = np.array(time_series[ind_start:ind_end])
     matrix_t = np.array(time_array[ind_start:ind_end])
-    tm.MCM(matrix,matrix_t, k)
+    tm.MCM(matrix, matrix_t, k)
 if __name__ == '__main__':
     #ex3('Алюминий 2 серия.xlsx', 2, 2, 20, 0.005, 5500, 8500)
     #ex4('Алюминий 2 серия.xlsx', 2, 2, 20, 0.0009, 5500, 8500)
-    TryToFindMC('Алюминий 2 серия.xlsx', 2, 2, 1700, 5500, 8500)
+    TryToFindMC('Алюминий 2 серия.xlsx', 2, 2, 25, 5500, 8500)
 
 
