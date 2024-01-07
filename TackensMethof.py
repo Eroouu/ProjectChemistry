@@ -9,8 +9,7 @@ import matplotlib.pyplot as plt
 import seaborn as sns
 from numpy import linalg as LA
 import pandas as pd
-import sklearn
-from sklearn.decomposition import PCA
+
 
 def HowManyElementsInG(vector, n, e):
     array_ind_g = np.zeros(len(vector))
@@ -50,11 +49,11 @@ def Making_Covar_Matrix(time_series, k):
     for i in range(k):
         ti = time_series[i:i + N - k + 1]
         ti_mean = np.mean(ti)
-        C[i, i] = np.dot(ti - ti_mean, ti - ti_mean)
+        C[i, i] = np.dot(ti - series_mean, ti - series_mean)
         for j in range(i + 1, k):
             tj = time_series[j:j + N - k + 1]
             tj_mean = np.mean(tj)
-            C[i, j] = np.dot(ti - ti_mean, tj - tj_mean)
+            C[i, j] = np.dot(ti - series_mean, tj - series_mean)
             C[j, i] = C[i, j]
     print(np.trace(C))
     return C
@@ -85,10 +84,23 @@ def The_broken_cane_method(C, k):
     df = pd.DataFrame(dfdata)
     print('\n', df)
     return 0
+def MakingNewVectors(time_series, C, k):
+    eigenvalues, eigenvectors = LA.eig(C)
+    N = len(time_series)
+    temp_series = []
+    for i in range(N - k):
+        t = time_series[i:i + k]
+        tt = []
+        for j in range(k):
+            tt.append(np.dot(t, eigenvectors[j]))
+        temp_series.append(tt)
+    return np.array(temp_series)
 def MCM(time_series,time_array,  k):
     data = np.array([time_series[i:i + len(time_series) - k] for i in range(k)])
-    npQ = np.cov(data, bias=True)
+    npС = np.cov(data, bias=True)
     C = Making_Covar_Matrix(time_series, k)
+    plt.plot(MakingNewVectors(time_series, C, k)[:, 1])
+    plt.show()
     #print(C, '\n', npQ)
     #Covar_Matrix_Inf(C,k)
     #The_broken_cane_method(C, k)
