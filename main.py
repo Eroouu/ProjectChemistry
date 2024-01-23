@@ -352,21 +352,23 @@ def ex4(name,x, y, n, epsilon, ind_start, ind_end):
     plt.plot(et, rez_arr[4], 'o', label='n = 80')
     plt.legend(bbox_to_anchor=(1.05, 1), loc=2, borderaxespad=0.)
     plt.show()
-def TryToFindMC(name,x ,y, k, ind_start, ind_end):
+def FindFileFrom(name,x ,y):
     wb = openpyxl.load_workbook(filename=name)
     sheet = wb['1']
     time_series = []
     time_array = []
     while sheet.cell(row=x, column=y).value != None:
         time_series.append(float(sheet.cell(row=x, column=y).value))
-        time_array.append(float(sheet.cell(row=x, column=y-1).value))
+        time_array.append(float(sheet.cell(row=x, column=y - 1).value))
         x += 1
-    matrix = np.array(time_series[ind_start:ind_end])
-    matrix_t = np.array(time_array[ind_start:ind_end])
-    tm.MCM(matrix, matrix_t, k)
+    return np.array([time_series, time_array])
+def TryToFindMC(full_series, k, ind_start, ind_end):
+    matrix = np.array(full_series[0][ind_start:ind_end])
+    matrix_t = np.array(full_series[1][ind_start:ind_end])
+    tm.PCA(matrix, matrix_t, k)
 if __name__ == '__main__':
     #ex3('Алюминий 2 серия.xlsx', 2, 2, 20, 0.005, 5500, 8500)
     #ex4('Алюминий 2 серия.xlsx', 2, 2, 20, 0.0009, 5500, 8500)
-    TryToFindMC('Алюминий 2 серия.xlsx', 2, 2, 100, 5500, 8500)
+    TryToFindMC(FindFileFrom('Алюминий 2 серия.xlsx', 2, 2), 5, 5500, 8500)
 
 
