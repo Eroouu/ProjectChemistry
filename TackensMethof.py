@@ -95,13 +95,13 @@ def MakingNewVectors(time_series, C, k):
             tt.append(np.dot(t, eigenvectors[j]))
         temp_series.append(tt)
     return np.array(temp_series)
-def PCA(time_series,time_array,  k):
+def PCA(time_series,  k):
     data = np.array([time_series[i:i + len(time_series) - k] for i in range(k)])
     npС = np.cov(data, bias=True)
     C = Making_Covar_Matrix(time_series, k)
     plt.plot(MakingNewVectors(time_series, C, k)[:, 1])
     plt.show()
     #print(C, '\n', npQ)
-    Covar_Matrix_Inf(C,k)
+    #Covar_Matrix_Inf(C,k)
     #The_broken_cane_method(C, k)
     return 0

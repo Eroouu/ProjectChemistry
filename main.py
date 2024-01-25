@@ -265,8 +265,7 @@ def HurstKoef(array):
     R = M_t - m_t
     H = math.log(R / s, 10) / math.log(len(array), 10)
     return H
-
-def FindHurstKoefInMatrix(name, x_start, y_start):#надо убрать зависимость от t!
+def FindHurstKoefInMatrix(name, x_start, y_start):
     matrix = []
     wb = openpyxl.load_workbook(filename=name)
     sheet = wb['1']
@@ -294,6 +293,16 @@ def ex1():
     a3 = FindHurstKoefInMatrix('Трубчатый перколяционный кластер 1 первое насыщение носа.xlsx', 2, 2)
     a4 = FindHurstKoefInMatrix('Трубчатый перколяционный кластер 2 второе последовательно после 1го насыщение носа.xlsx', 2, 2)
     return 0
+def FindFileFrom(name,x ,y):
+    wb = openpyxl.load_workbook(filename=name)
+    sheet = wb['1']
+    time_series = []
+    time_array = []
+    while sheet.cell(row=x, column=y).value != None:
+        time_series.append(float(sheet.cell(row=x, column=y).value))
+        time_array.append(float(sheet.cell(row=x, column=y - 1).value))
+        x += 1
+    return np.array(time_series)
 def ex2():
     #ChemistryKoef('DB.xlsx', 'KoefDB2.xlsx')
     #MakeFileForMatrixWithName(MinimimalPowell(matrix, 11, 1, 19), "Solution №0 columns 1-18")
@@ -304,43 +313,20 @@ def ex2():
     #TackensMethof.FindTackensKoefInMatrix('Examplefractal_s2_4000mv_2000mvs_С_ДИАГРАММАМИ.xlsx', 40, 0.001)
     #print(TackensMethof.FindCInVector([1.3, 1.32, 1.35, 1.38, 1.43], 2, 0.01))
     return 0
-def ex3(name,x, y, n, epsilon, ind_start, ind_end):
-    wb = openpyxl.load_workbook(filename=name)
-    sheet = wb['1']
-    matrix = []
-    while sheet.cell(row=x, column=y).value != None:
-        matrix.append(float(sheet.cell(row=x, column=y).value))
-        x += 1
-    matrix = np.array(matrix)
-    #print(f'number of el in Cne in {name} = {tm.HowManyElementsInG(matrix[ind_start: ind_end], n, epsilon)}')
-    numn = 3
-    nume = 7
-    #array = tm.FindManyValuesInVector(matrix[ind_start: ind_end], n, epsilon, 0.15, numb)
-
+def CheckingTheProbabilityToAnalis(matrix, n, numn, nume, epsilon, ind_start, ind_end):
     fig = plt.figure(figsize=(15, 10))
     ax = fig.add_subplot(projection= "3d")
     nt = np.array([n + i * 15 for i in range(numn)])
     et = np.array([epsilon * 0.85 ** j for j in range(nume)])
     rez_arr = np.array([[tm.FindSpecFunkValue(matrix[ind_start: ind_end], nt[i], et[j]) for j in range(nume)] for i in range(int(numn))])
-    #print(rez_arr)
-    #print(rez_arr.ravel())
-    #ax.scatter(nt, et, rez_arr.ravel())
+
     ax.scatter(np.repeat(nt, nume), np.tile(et, numn), rez_arr.ravel())
     ax.set_xlabel("n")
     ax.set_ylabel("e")
     plt.title('grapthics for Cne')
     plt.show()
 
-def ex4(name,x, y, n, epsilon, ind_start, ind_end):
-    wb = openpyxl.load_workbook(filename=name)
-    sheet = wb['1']
-    matrix = []
-    while sheet.cell(row=x, column=y).value != None:
-        matrix.append(float(sheet.cell(row=x, column=y).value))
-        x += 1
-    matrix = np.array(matrix)
-    numn = 5
-    nume = 25
+def ex4(matrix, n, numn, nume, epsilon, ind_start, ind_end):
     fig = plt.figure(figsize=(12, 7))
     nt = np.array([n + i * 15 for i in range(numn)])
     et = np.array([epsilon * 0.85 ** j for j in range(nume)])
@@ -352,23 +338,17 @@ def ex4(name,x, y, n, epsilon, ind_start, ind_end):
     plt.plot(et, rez_arr[4], 'o', label='n = 80')
     plt.legend(bbox_to_anchor=(1.05, 1), loc=2, borderaxespad=0.)
     plt.show()
-def FindFileFrom(name,x ,y):
-    wb = openpyxl.load_workbook(filename=name)
-    sheet = wb['1']
-    time_series = []
-    time_array = []
-    while sheet.cell(row=x, column=y).value != None:
-        time_series.append(float(sheet.cell(row=x, column=y).value))
-        time_array.append(float(sheet.cell(row=x, column=y - 1).value))
-        x += 1
-    return np.array([time_series, time_array])
+
 def TryToFindMC(full_series, k, ind_start, ind_end):
-    matrix = np.array(full_series[0][ind_start:ind_end])
-    matrix_t = np.array(full_series[1][ind_start:ind_end])
-    tm.PCA(matrix, matrix_t, k)
+    matrix = np.array(full_series[ind_start:ind_end])
+    tm.PCA(matrix, k)
+def RandomSeries(a, b, length):
+    return np.random.rand(length) * (b - a) + a
+def TryingWithRandowValue():#функция проверяет значения Cne|logn + e и тд на рандомном ряде
+    CheckingTheProbabilityToAnalis(RandomSeries(0, 1, 10000), 100, 1, 1, 0.001, 1, 9900)
 if __name__ == '__main__':
-    #ex3('Алюминий 2 серия.xlsx', 2, 2, 20, 0.005, 5500, 8500)
+    #CheckingTheProbabilityToAnalis(FindFileFrom('Алюминий 2 серия.xlsx', 2, 2), 20, 0.005, 5500, 8500)
     #ex4('Алюминий 2 серия.xlsx', 2, 2, 20, 0.0009, 5500, 8500)
-    TryToFindMC(FindFileFrom('Алюминий 2 серия.xlsx', 2, 2), 5, 5500, 8500)
-
-
+    #TryToFindMC(FindFileFrom('Алюминий 2 серия.xlsx', 2, 2), 5, 5500, 8500)
+    #TryToFindMC(RandomSeries(10000), 5, 5500, 8500)
+    TryingWithRandowValue()
