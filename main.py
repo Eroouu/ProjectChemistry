@@ -316,7 +316,7 @@ def ex2():
 def CheckingTheProbabilityToAnalis(matrix, n, numn, nume, epsilon, ind_start, ind_end):
     fig = plt.figure(figsize=(15, 10))
     ax = fig.add_subplot(projection= "3d")
-    nt = np.array([n + i * 15 for i in range(numn)])
+    nt = np.array([n + i * 5 for i in range(numn)])
     et = np.array([epsilon * 0.85 ** j for j in range(nume)])
     rez_arr = np.array([[tm.FindSpecFunkValue(matrix[ind_start: ind_end], nt[i], et[j]) for j in range(nume)] for i in range(int(numn))])
 
@@ -344,11 +344,25 @@ def TryToFindMC(full_series, k, ind_start, ind_end):
     tm.PCA(matrix, k)
 def RandomSeries(a, b, length):
     return np.random.rand(length) * (b - a) + a
+
+def Logistic_Model(x0, numx):
+    mu = 4
+    massive = []
+    massive.append(x0)
+    for i in range(numx):
+      x1 = mu * x0 * (1 - x0)
+      massive.append(x1)
+      x0 = x1
+      #print(x1)
+    return np.array(massive)
+
 def TryingWithRandowValue():#функция проверяет значения Cne|logn + e и тд на рандомном ряде
-    CheckingTheProbabilityToAnalis(RandomSeries(0, 1, 10000), 100, 1, 1, 0.001, 1, 9900)
+    CheckingTheProbabilityToAnalis(RandomSeries(0, 1, 10000), 5, 4, 10, 1, 1000, 2000)
 if __name__ == '__main__':
     #CheckingTheProbabilityToAnalis(FindFileFrom('Алюминий 2 серия.xlsx', 2, 2), 20, 0.005, 5500, 8500)
     #ex4('Алюминий 2 серия.xlsx', 2, 2, 20, 0.0009, 5500, 8500)
     #TryToFindMC(FindFileFrom('Алюминий 2 серия.xlsx', 2, 2), 5, 5500, 8500)
     #TryToFindMC(RandomSeries(10000), 5, 5500, 8500)
-    TryingWithRandowValue()
+    #TryingWithRandowValue()
+    #ex4(Logistic_Model(0.2,10000), 10, 1, 1, 0.001, 100, 1000)
+    CheckingTheProbabilityToAnalis(Logistic_Model(0.2,10000), 5, 4, 20, 1, 1000, 2000)
