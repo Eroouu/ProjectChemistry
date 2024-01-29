@@ -356,6 +356,20 @@ def Logistic_Model(x0, numx):
       #print(x1)
     return np.array(massive)
 
+def Xenon_Model(x0,x1,a,b, n):
+    massive = []
+    massive.append(x0)
+    massive.append(x1)
+    print(x0)
+    print(x1)
+    for i in range(n):
+        x2 = 1 - a * x1**2 + b * x1
+        massive.append(x2)
+        x0 = x1
+        x1 = x2
+        print(x2)
+    return np.array(massive)
+
 def TryingWithRandowValue():#функция проверяет значения Cne|logn + e и тд на рандомном ряде
     CheckingTheProbabilityToAnalis(RandomSeries(0, 1, 10000), 5, 4, 10, 1, 1000, 2000)
 if __name__ == '__main__':
@@ -365,4 +379,6 @@ if __name__ == '__main__':
     #TryToFindMC(RandomSeries(10000), 5, 5500, 8500)
     #TryingWithRandowValue()
     #ex4(Logistic_Model(0.2,10000), 10, 1, 1, 0.001, 100, 1000)
-    CheckingTheProbabilityToAnalis(Logistic_Model(0.2,10000), 5, 4, 20, 1, 1000, 2000)
+    #CheckingTheProbabilityToAnalis(Logistic_Model(0.2,10000), 5, 4, 20, 1, 1000, 2000)
+    CheckingTheProbabilityToAnalis(Xenon_Model(-0.877, 0.257, 1.8, -0.005, 10000), 5, 4, 20, 1, 1000, 2000)
+    CheckingTheProbabilityToAnalis(Xenon_Model(-0.877, 0.257, 1.49, -0.138, 10000), 5, 4, 20, 1, 1000, 2000)
