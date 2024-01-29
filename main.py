@@ -326,6 +326,7 @@ def CheckingTheProbabilityToAnalis(matrix, n, numn, nume, epsilon, ind_start, in
     plt.title('grapthics for Cne')
     plt.show()
 
+
 def ex4(matrix, n, numn, nume, epsilon, ind_start, ind_end):
     fig = plt.figure(figsize=(12, 7))
     nt = np.array([n + i * 15 for i in range(numn)])
@@ -356,6 +357,12 @@ def Logistic_Model(x0, numx):
       #print(x1)
     return np.array(massive)
 
+def Make_series_graphics(series, name):
+    fig = plt.figure(figsize=(12, 7))
+    plt.plot(series, 'r', label=name)
+    plt.show()
+    return 0
+
 def Xenon_Model(x0,x1,a,b, n):
     massive = []
     massive.append(x0)
@@ -363,11 +370,11 @@ def Xenon_Model(x0,x1,a,b, n):
     print(x0)
     print(x1)
     for i in range(n):
-        x2 = 1 - a * x1**2 + b * x1
+        x2 = 1 - a * x1**2 + b * x0
         massive.append(x2)
         x0 = x1
         x1 = x2
-        print(x2)
+    Make_series_graphics(massive[0:1000], 'Xenon_model')
     return np.array(massive)
 
 def TryingWithRandowValue():#функция проверяет значения Cne|logn + e и тд на рандомном ряде
