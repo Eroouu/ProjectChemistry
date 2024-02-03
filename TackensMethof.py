@@ -99,9 +99,32 @@ def PCA(time_series,  k):
     data = np.array([time_series[i:i + len(time_series) - k] for i in range(k)])
     npС = np.cov(data, bias=True)
     C = Making_Covar_Matrix(time_series, k)
-    plt.plot(MakingNewVectors(time_series, C, k)[:, 1])
-    plt.show()
-    #print(C, '\n', npQ)
-    #Covar_Matrix_Inf(C,k)
-    #The_broken_cane_method(C, k)
+    #plt.plot(MakingNewVectors(time_series, C, k)[:, 1])
+    #plt.show()
+    #print(C, '\n', npС)
+    Covar_Matrix_Inf(C,k)
+    The_broken_cane_method(C, k)
+    return 0
+
+def Making_Covar_Matrix_2(time_series, n):
+    N = len(time_series)
+    series_mean = np.mean(time_series)
+    C = np.zeros((n, n))
+    for i in range(n):
+        ti = time_series[i * 100:99+i*100]
+        ti_mean = np.mean(ti)
+        C[i, i] = np.dot(ti - series_mean, ti - series_mean)
+        for j in range(i + 1, n):
+            tj = time_series[j * 100:99+j *100]
+            tj_mean = np.mean(tj)
+            C[i, j] = np.dot(ti - series_mean, tj - series_mean)
+            C[j, i] = C[i, j]
+    print(np.trace(C))
+    return C
+def PCA_2(time_series, n):
+    data = np.array([time_series[i * 100:99+i*100 ] for i in range(n)])
+    npc = np.cov(data,bias = True)
+    C = Making_Covar_Matrix_2(time_series,n)
+    Covar_Matrix_Inf(C, n)
+    The_broken_cane_method(C, n)
     return 0

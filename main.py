@@ -295,7 +295,7 @@ def ex1():
     return 0
 def FindFileFrom(name,x ,y):
     wb = openpyxl.load_workbook(filename=name)
-    sheet = wb['1']
+    sheet = wb['алюм полоски 7вольт гуд']
     time_series = []
     time_array = []
     while sheet.cell(row=x, column=y).value != None:
@@ -356,19 +356,21 @@ def Logistic_Model(x0, numx):
       #print(x1)
     return np.array(massive)
 
-def Xenon_Model(x0,x1,a,b, n):
+def Xenon_Model(u0,v0,a,b, n):
     massive = []
-    massive.append(x0)
-    massive.append(x1)
-    print(x0)
-    print(x1)
+    print(u0)
     for i in range(n):
-        x2 = 1 - a * x1**2 + b * x1
-        massive.append(x2)
-        x0 = x1
-        x1 = x2
-        print(x2)
+        v1 = a - b * u0 - v0**2
+        u1 = v0
+        u0 = u1
+        v0 = v1
+        massive.append(u1)
+        #print(x2)
     return np.array(massive)
+
+def TryToFindMC_2(full_series, k, ind_start, ind_end):
+    matrix = np.array(full_series[ind_start:ind_end])
+    tm.PCA_2(matrix, k)
 
 def TryingWithRandowValue():#функция проверяет значения Cne|logn + e и тд на рандомном ряде
     CheckingTheProbabilityToAnalis(RandomSeries(0, 1, 10000), 5, 4, 10, 1, 1000, 2000)
@@ -380,5 +382,9 @@ if __name__ == '__main__':
     #TryingWithRandowValue()
     #ex4(Logistic_Model(0.2,10000), 10, 1, 1, 0.001, 100, 1000)
     #CheckingTheProbabilityToAnalis(Logistic_Model(0.2,10000), 5, 4, 20, 1, 1000, 2000)
-    CheckingTheProbabilityToAnalis(Xenon_Model(-0.877, 0.257, 1.8, -0.005, 10000), 5, 4, 20, 1, 1000, 2000)
-    CheckingTheProbabilityToAnalis(Xenon_Model(-0.877, 0.257, 1.49, -0.138, 10000), 5, 4, 20, 1, 1000, 2000)
+    #CheckingTheProbabilityToAnalis(Xenon_Model(-0.877, 0.257, 1.8, -0.005, 10000), 5, 4, 20, 1, 1000, 2000)
+    #CheckingTheProbabilityToAnalis(Xenon_Model(-0.877, 0.257, 1.49, -0.138, 10000), 5, 4, 20, 1, 1000, 2000)
+    #Xenon_Model(0.3, 0.3, 0.33, -0.35, 10)
+    #CheckingTheProbabilityToAnalis(Xenon_Model(0.3, 0.3, 0.33, -0.35, 20000),  5, 4, 20, 1, 1000, 2000)
+    #TryToFindMC(FindFileFrom('Алюминий 2 серия.xlsx', 2, 2), 5, 5500, 8500)
+    TryToFindMC_2(FindFileFrom('Алюминий 2 серия.xlsx', 2, 2), 10, 5500, 8500)
