@@ -336,7 +336,7 @@ def ex4(matrix, n, numn, nume, epsilon, ind_start, ind_end):
     plt.plot(et, rez_arr[2], 'b', label='n = 50')
     plt.plot(et, rez_arr[3], 'y', label='n = 65')
     plt.plot(et, rez_arr[4], 'o', label='n = 80')
-    plt.legend(bbox_to_anchor=(1.05, 1), loc=2, borderaxespad=0.)
+    plt.legend(bbox_to_anchor=(1.05, 2), loc=2, borderaxespad=0.)
     plt.show()
 
 def TryToFindMC(full_series, k, ind_start, ind_end):

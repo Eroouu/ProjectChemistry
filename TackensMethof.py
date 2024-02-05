@@ -134,9 +134,9 @@ def Making_Covar_Matrix_2(time_series, n):
     print(np.trace(C))
     return C
 def PCA_2(time_series, n):
-    data = np.array([time_series[i * 100:100 + i * 100] for i in range(n)])
-    npc = np.cov(data, bias=True)
-    C = Making_Covar_Matrix_2(time_series, n)
+    data = np.array([time_series[i * 100:110+i*100 ] for i in range(n)])
+    npc = np.cov(data,bias = True)
+    C = Making_Covar_Matrix_2(time_series,n)
     #plt.plot(MakingNewVectors_2(time_series, C, n)[:, 1])
     #plt.show()
     #print(C, '\n', npc)
@@ -145,11 +145,16 @@ def PCA_2(time_series, n):
     return 0
 
 def Try_to_find_sth(time_series, n):
-    data = np.array([time_series[i * 100:100 + i * 100] for i in range(n)])
+    data = np.array([time_series[i * 100:110 + i * 100] for i in range(n)])
     U = svd(data)
-    a_1t = []
+    A_1t= []
+    A_1=[]
     for i in range(4):
-        s = U[1][i] * data[1][i]
-        a_1t.append(s)
-    print(a_1t)
-    return np.array(a_1t)
+        for j in range(len(data[i])):
+            s = U[0][0][i] * data[0][j]
+            A_1t.append(s)
+        x = np.array([k for k in range(len(A_1t))])
+        plt.plot(x, A_1t, label = f"Компонента = {i}")
+    plt.legend()
+    plt.show()
+    return np.array(A_1t)
