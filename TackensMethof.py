@@ -11,7 +11,7 @@ from numpy import linalg as LA
 import pandas as pd
 from scipy.linalg import svd
 
-
+#функция анализирует множество G и выдает сколько по итогу в нем элементов
 def HowManyElementsInG(vector, n, e):
     array_ind_g = np.zeros(len(vector))
     array_ind_g[0] = 1
@@ -41,23 +41,24 @@ def FindManyValuesInVector(vector, n, e, proc_decriese, counte):
     array = []
     for i in range(counte):
         array.append(FindSpecFunkValue(vector, n, e))
-        e *= (1-proc_decriese )
+        e *= (1-proc_decriese)
     return array
+
 def Making_Covar_Matrix(time_series, k):
-    N = len(time_series)
+    n = len(time_series)
     series_mean = np.mean(time_series)
     C = np.zeros((k, k))
     for i in range(k):
-        ti = time_series[i:i + N - k + 1]
-        ti_mean = np.mean(ti)
+        ti = time_series[i:i + n - k + 1]
         C[i, i] = np.dot(ti - series_mean, ti - series_mean)
         for j in range(i + 1, k):
-            tj = time_series[j:j + N - k + 1]
+            tj = time_series[j:j + n - k + 1]
             tj_mean = np.mean(tj)
             C[i, j] = np.dot(ti - series_mean, tj - series_mean)
             C[j, i] = C[i, j]
-    print(np.trace(C))
+    #print(np.trace(C))
     return C
+
 def Covar_Matrix_Inf(C, k):
     plt.figure(figsize=(9, 7), dpi=80)
     sns.heatmap(C, annot=True, fmt='g', xticklabels=[i for i in range(k)], yticklabels=[i for i in range(k)])
@@ -71,6 +72,7 @@ def Covar_Matrix_Inf(C, k):
     plt.plot(x, np.log(eigenvalues))
     plt.title(f"График значений собственных чисел для k = {k}", fontsize=14)
     plt.show()
+
 def The_broken_cane_method(C, k):
     # реализация метода сломаной трости
     eigenvalues, eigenvectors = LA.eig(C)
@@ -85,58 +87,34 @@ def The_broken_cane_method(C, k):
     df = pd.DataFrame(dfdata)
     print('\n', df)
     return 0
-def MakingNewVectors(time_series, C, k):
-    eigenvalues, eigenvectors = LA.eig(C)
-    N = len(time_series)
-    temp_series = []
-    for i in range(N - k):
-        t = time_series[i:i + k]
-        tt = []
-        for j in range(k):
-            tt.append(np.dot(t, eigenvectors[j]))
-        temp_series.append(tt)
-    return np.array(temp_series)
+
 def PCA(time_series,  k):
     data = np.array([time_series[i:i + len(time_series) - k] for i in range(k)])
     npС = np.cov(data, bias=True)
-    C = Making_Covar_Matrix(time_series, k)
-    #plt.plot(MakingNewVectors(time_series, C, k)[:, 1])
+    c = Making_Covar_Matrix(time_series, k)
+    #plt.plot(MakingNewVectors(time_series, c, k)[:, 1])
     #plt.show()
     #print(C, '\n', npС)
-    Covar_Matrix_Inf(C,k)
-    The_broken_cane_method(C, k)
+    Covar_Matrix_Inf(c,k)
+    The_broken_cane_method(c, k)
     return 0
 
-def MakingNewVectors_2(time_series, C, k):
-    eigenvalues, eigenvectors = LA.eig(C)
-    N = len(time_series)
-    temp_series = []
-    for i in range(N - k):
-        t = time_series[i:i + k]
-        tt = []
-        for j in range(k):
-            tt.append(np.dot(t, eigenvectors[j]))
-        temp_series.append(tt)
-    return np.array(temp_series)
 def Making_Covar_Matrix_2(time_series, n):
     N = len(time_series)
     series_mean = np.mean(time_series)
     C = np.zeros((n, n))
     for i in range(n):
-        ti = time_series[i * 100:100+i*100]
-        ti_mean = np.mean(ti)
+        ti = time_series[i * 100:100 + i * 100]
         C[i, i] = np.dot(ti - series_mean, ti - series_mean)
         for j in range(i + 1, n):
-            tj = time_series[j * 100:100+j *100]
-            tj_mean = np.mean(tj)
+            tj = time_series[j * 100:100+j * 100]
             C[i, j] = np.dot(ti - series_mean, tj - series_mean)
             C[j, i] = C[i, j]
-    print(np.trace(C))
+    #print(np.trace(C))
     return C
+
 def PCA_2(time_series, n):
-    data = np.array([time_series[i * 100:110+i*100 ] for i in range(n)])
-    npc = np.cov(data,bias = True)
-    C = Making_Covar_Matrix_2(time_series,n)
+    C = Making_Covar_Matrix_2(time_series, n)
     #plt.plot(MakingNewVectors_2(time_series, C, n)[:, 1])
     #plt.show()
     #print(C, '\n', npc)
@@ -144,17 +122,23 @@ def PCA_2(time_series, n):
     The_broken_cane_method(C, n)
     return 0
 
-def Try_to_find_sth(time_series, n):
-    data = np.array([time_series[i * 100:110 + i * 100] for i in range(n)])
-    U = svd(data)
-    A_1t= []
-    A_1=[]
-    for i in range(4):
-        for j in range(len(data[i])):
-            s = U[0][0][i] * data[0][j]
-            A_1t.append(s)
-        x = np.array([k for k in range(len(A_1t))])
-        plt.plot(x, A_1t, label = f"Компонента = {i}")
-        plt.legend()
-        plt.show()
-    return np.array(A_1t)
+def MakingNewVectorsInKDimension(time_series, C, k):
+    eigenvalues, eigenvectors = LA.eig(C)
+    n = len(time_series)
+    temp_series = []
+    for i in range(n - k):
+        t = time_series[i:i + k]
+        tt = []
+        for j in range(k):
+            tt.append(np.dot(t, eigenvectors[j]))
+        temp_series.append(tt)
+    return np.array(temp_series)
+
+def MakingArrayOfComponentsValue(time_series, k):
+    c = Making_Covar_Matrix(time_series, k)
+    eigenvalues, eigenvectors = LA.eig(c)
+    vectors = np.array([time_series[i:i + len(time_series) - k] for i in range(k)])
+    vector_projection = []
+    for i in range(k):
+        vector_projection.append([np.dot(vectors[j][0:k], eigenvectors[i]) for j in range(k)])
+    return vector_projection

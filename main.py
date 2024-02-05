@@ -82,10 +82,13 @@ def TryToFindMC_2(full_series, k, ind_start, ind_end):
 def TryingWithRandowValue():#функция проверяет значения Cne|logn + e и тд на рандомном ряде
     CheckingTheProbabilityToAnalis(RandomSeries(0, 1, 10000), 5, 4, 10, 1, 1000, 2000)
 
-def Try_sth(full_series, k, ind_start, ind_end):
-    matrix = np.array(full_series[ind_start:ind_end])
-    tm.Try_to_find_sth(matrix, k)
-
+def MakePlotsOfComponentsValue(full_series, k, how_many_k_show, ind_start, ind_end):
+    series = np.array(full_series[ind_start:ind_end])
+    vector_projection = tm.MakingArrayOfComponentsValue(series, k)
+    for i in range(how_many_k_show):
+        plt.plot(vector_projection[i], label=f"Компонента = {i}")
+        plt.legend()
+        plt.show()
 if __name__ == '__main__':
     #CheckingTheProbabilityToAnalis(FindFileFrom('Алюминий 2 серия.xlsx', 2, 2), 20, 0.005, 5500, 8500)
     #ex4('Алюминий 2 серия.xlsx', 2, 2, 20, 0.0009, 5500, 8500)
@@ -97,4 +100,4 @@ if __name__ == '__main__':
     #CheckingTheProbabilityToAnalis(Xenon_Model(-0.877, 0.257, 1.8, -0.005, 10000), 5, 4, 20, 1, 1000, 2000)
     #CheckingTheProbabilityToAnalis(Xenon_Model(-0.877, 0.257, 1.49, -0.138, 10000), 5, 4, 20, 1, 1000, 2000)
     #TryToFindMC_2(FindFileFrom('Алюминий 2 серия.xlsx', 2, 2), 10, 5500, 8500)
-    Try_sth(FindFileFrom('Алюминий 2 серия.xlsx', 2, 2), 10, 5500, 8500)
+    MakePlotsOfComponentsValue(FindFileFrom('Алюминий 2 серия.xlsx', 2, 2), 100, 4, 5500, 8500)
