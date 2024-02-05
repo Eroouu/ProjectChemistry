@@ -367,7 +367,7 @@ def Xenon_Model(x0,x1,a,b, n):
         massive.append(x2)
         x0 = x1
         x1 = x2
-        print(x2)
+        #print(x2)
     return np.array(massive)
 
 def TryToFindMC_2(full_series, k, ind_start, ind_end):
