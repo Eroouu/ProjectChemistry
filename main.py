@@ -295,7 +295,7 @@ def ex1():
     return 0
 def FindFileFrom(name,x ,y):
     wb = openpyxl.load_workbook(filename=name)
-    sheet = wb['1']
+    sheet = wb['алюм полоски 7вольт гуд']
     time_series = []
     time_array = []
     while sheet.cell(row=x, column=y).value != None:
@@ -370,8 +370,16 @@ def Xenon_Model(x0,x1,a,b, n):
         print(x2)
     return np.array(massive)
 
+def TryToFindMC_2(full_series, k, ind_start, ind_end):
+    matrix = np.array(full_series[ind_start:ind_end])
+    tm.PCA_2(matrix, k)
 def TryingWithRandowValue():#функция проверяет значения Cne|logn + e и тд на рандомном ряде
     CheckingTheProbabilityToAnalis(RandomSeries(0, 1, 10000), 5, 4, 10, 1, 1000, 2000)
+
+def Try_sth(full_series, k, ind_start, ind_end):
+    matrix = np.array(full_series[ind_start:ind_end])
+    tm.Try_to_find_sth(matrix, k)
+
 if __name__ == '__main__':
     #CheckingTheProbabilityToAnalis(FindFileFrom('Алюминий 2 серия.xlsx', 2, 2), 20, 0.005, 5500, 8500)
     #ex4('Алюминий 2 серия.xlsx', 2, 2, 20, 0.0009, 5500, 8500)
@@ -380,5 +388,7 @@ if __name__ == '__main__':
     #TryingWithRandowValue()
     #ex4(Logistic_Model(0.2,10000), 10, 1, 1, 0.001, 100, 1000)
     #CheckingTheProbabilityToAnalis(Logistic_Model(0.2,10000), 5, 4, 20, 1, 1000, 2000)
-    CheckingTheProbabilityToAnalis(Xenon_Model(-0.877, 0.257, 1.8, -0.005, 10000), 5, 4, 20, 1, 1000, 2000)
-    CheckingTheProbabilityToAnalis(Xenon_Model(-0.877, 0.257, 1.49, -0.138, 10000), 5, 4, 20, 1, 1000, 2000)
+    #CheckingTheProbabilityToAnalis(Xenon_Model(-0.877, 0.257, 1.8, -0.005, 10000), 5, 4, 20, 1, 1000, 2000)
+    #CheckingTheProbabilityToAnalis(Xenon_Model(-0.877, 0.257, 1.49, -0.138, 10000), 5, 4, 20, 1, 1000, 2000)
+    #TryToFindMC_2(FindFileFrom('Алюминий 2 серия.xlsx', 2, 2), 10, 5500, 8500)
+    Try_sth(FindFileFrom('Алюминий 2 серия.xlsx', 2, 2), 10, 5500, 8500)
