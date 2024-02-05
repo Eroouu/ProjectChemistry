@@ -155,6 +155,6 @@ def Try_to_find_sth(time_series, n):
             A_1t.append(s)
         x = np.array([k for k in range(len(A_1t))])
         plt.plot(x, A_1t, label = f"Компонента = {i}")
-    plt.legend()
-    plt.show()
+        plt.legend()
+        plt.show()
     return np.array(A_1t)
