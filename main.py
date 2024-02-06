@@ -89,6 +89,18 @@ def MakePlotsOfComponentsValue(full_series, k, how_many_k_show, ind_start, ind_e
         plt.legend()
         plt.show()
 
+def Make3DCloudOfPoints(number_of_points):
+    return np.random.random(number_of_points), np.random.random(number_of_points), np.random.random(number_of_points)
+
+def ExperimentIn3Dimension(number_of_points):
+    x, y, z = Make3DCloudOfPoints(number_of_points)
+    matrix = np.dstack((x, y, z))
+    fig = plt.figure(figsize=(4, 4))
+    ax = fig.add_subplot(111, projection='3d')
+    ax.scatter(x, y, z)
+    plt.arrow(np.mean(x), np.mean(y), np.mean(z), dx, dy, dz)
+    plt.show()
+    return 0
 if __name__ == '__main__':
     #CheckingTheProbabilityToAnalis(FindFileFrom('Алюминий 2 серия.xlsx', 2, 2), 20, 0.005, 5500, 8500)
     #ex4('Алюминий 2 серия.xlsx', 2, 2, 20, 0.0009, 5500, 8500)
@@ -101,3 +113,4 @@ if __name__ == '__main__':
     #CheckingTheProbabilityToAnalis(Xenon_Model(-0.877, 0.257, 1.49, -0.138, 10000), 5, 4, 20, 1, 1000, 2000)
     #TryToFindMC_2(FindFileFrom('Алюминий 2 серия.xlsx', 2, 2), 10, 5500, 8500)
     #MakePlotsOfComponentsValue(FindFileFrom('Алюминий 2 серия.xlsx', 2, 2), 300, 4, 5500, 8500)
+    ExperimentIn3Dimension(100)

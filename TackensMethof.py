@@ -120,7 +120,10 @@ def PCA_2(time_series, n):
     Covar_Matrix_Inf(C, n)
     The_broken_cane_method(C, n)
     return 0
-
+def GetEigenvectors(time_series, k):
+    c = Making_Covar_Matrix(time_series, k)
+    eigenvalues, eigenvectors = LA.eig(c)
+    return eigenvectors
 def MakingNewVectorsInKDimension(time_series, C, k):
     eigenvalues, eigenvectors = LA.eig(C)
     n = len(time_series)
