@@ -25,7 +25,6 @@ def HowManyElementsInG(vector, n, e):
                     break
         if(i_is_in_G is True):
             array_ind_g[i] = 1
-    #print(array_ind_g)
     return int(sum(array_ind_g))
 
 def FindSpecFunkValue(vector, n, e):
@@ -99,14 +98,14 @@ def PCA(time_series,  k):
     The_broken_cane_method(c, k)
     return 0
 
-def Making_Covar_Matrix_2(time_series, n):
-    N = len(time_series)
+def Making_Covar_Matrix_2(time_series, k):
+    n = len(time_series)
     series_mean = np.mean(time_series)
-    C = np.zeros((n, n))
-    for i in range(n):
+    C = np.zeros((k, k))
+    for i in range(k):
         ti = time_series[i * 100:100 + i * 100]
         C[i, i] = np.dot(ti - series_mean, ti - series_mean)
-        for j in range(i + 1, n):
+        for j in range(i + 1, k):
             tj = time_series[j * 100:100+j * 100]
             C[i, j] = np.dot(ti - series_mean, tj - series_mean)
             C[j, i] = C[i, j]

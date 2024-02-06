@@ -12,8 +12,7 @@ from sklearn.decomposition import PCA
 def FindFileFrom(name,x ,y):
     wb = openpyxl.load_workbook(filename=name)
     sheet = wb['1']
-    time_series = []
-    time_array = []
+    time_series, time_array = [], []
     while sheet.cell(row=x, column=y).value != None:
         time_series.append(float(sheet.cell(row=x, column=y).value))
         time_array.append(float(sheet.cell(row=x, column=y - 1).value))
@@ -22,7 +21,7 @@ def FindFileFrom(name,x ,y):
 
 def CheckingTheProbabilityToAnalis(matrix, n, numn, nume, epsilon, ind_start, ind_end):
     fig = plt.figure(figsize=(15, 10))
-    ax = fig.add_subplot(projection= "3d")
+    ax = fig.add_subplot(projection="3d")
     nt = np.array([n + i * 5 for i in range(numn)])
     et = np.array([epsilon * 0.85 ** j for j in range(nume)])
     rez_arr = np.array([[tm.FindSpecFunkValue(matrix[ind_start: ind_end], nt[i], et[j]) for j in range(nume)] for i in range(int(numn))])
@@ -49,13 +48,13 @@ def ex4(matrix, n, numn, nume, epsilon, ind_start, ind_end):
 def TryToFindMC(full_series, k, ind_start, ind_end):
     matrix = np.array(full_series[ind_start:ind_end])
     tm.PCA(matrix, k)
+
 def RandomSeries(a, b, length):
     return np.random.rand(length) * (b - a) + a
 
-def Logistic_Model(x0, numx):
-    mu = 4
-    massive = []
-    massive.append(x0)
+def Logistic_Model(x0,mu, numx):
+    #mu = 4
+    massive = [x0]
     for i in range(numx):
       x1 = mu * x0 * (1 - x0)
       massive.append(x1)
@@ -69,7 +68,7 @@ def Xenon_Model(x0,x1,a,b, n):
     print(x0)
     print(x1)
     for i in range(n):
-        x2 = 1 - a * x1**2 + b * x1
+        x2 = 1 - a * x1**2 + b * x0
         massive.append(x2)
         x0 = x1
         x1 = x2
@@ -89,6 +88,7 @@ def MakePlotsOfComponentsValue(full_series, k, how_many_k_show, ind_start, ind_e
         plt.plot(vector_projection[i], label=f"Компонента = {i}")
         plt.legend()
         plt.show()
+
 if __name__ == '__main__':
     #CheckingTheProbabilityToAnalis(FindFileFrom('Алюминий 2 серия.xlsx', 2, 2), 20, 0.005, 5500, 8500)
     #ex4('Алюминий 2 серия.xlsx', 2, 2, 20, 0.0009, 5500, 8500)
@@ -96,8 +96,8 @@ if __name__ == '__main__':
     #TryToFindMC(RandomSeries(10000), 5, 5500, 8500)
     #TryingWithRandowValue()
     #ex4(Logistic_Model(0.2,10000), 10, 1, 1, 0.001, 100, 1000)
-    #CheckingTheProbabilityToAnalis(Logistic_Model(0.2,10000), 5, 4, 20, 1, 1000, 2000)
+    #CheckingTheProbabilityToAnalis(Logistic_Model(0.2, 4, 10000), 3, 2, 20, 1, 1000, 2000)
     #CheckingTheProbabilityToAnalis(Xenon_Model(-0.877, 0.257, 1.8, -0.005, 10000), 5, 4, 20, 1, 1000, 2000)
     #CheckingTheProbabilityToAnalis(Xenon_Model(-0.877, 0.257, 1.49, -0.138, 10000), 5, 4, 20, 1, 1000, 2000)
     #TryToFindMC_2(FindFileFrom('Алюминий 2 серия.xlsx', 2, 2), 10, 5500, 8500)
-    MakePlotsOfComponentsValue(FindFileFrom('Алюминий 2 серия.xlsx', 2, 2), 100, 4, 5500, 8500)
+    #MakePlotsOfComponentsValue(FindFileFrom('Алюминий 2 серия.xlsx', 2, 2), 300, 4, 5500, 8500)
