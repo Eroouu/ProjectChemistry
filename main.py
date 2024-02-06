@@ -2,10 +2,10 @@ import openpyxl
 import math
 import os
 import scipy
-from scipy.optimize import minimize
 import numpy as np
 import matplotlib.pyplot as plt
 import TackensMethof as tm
+from numpy import linalg as LA
 from mpl_toolkits.mplot3d import Axes3D
 from sklearn.decomposition import PCA
 
@@ -90,15 +90,26 @@ def MakePlotsOfComponentsValue(full_series, k, how_many_k_show, ind_start, ind_e
         plt.show()
 
 def Make3DCloudOfPoints(number_of_points):
-    return np.random.random(number_of_points), np.random.random(number_of_points), np.random.random(number_of_points)
+    return np.random.random(number_of_points)
 
 def ExperimentIn3Dimension(number_of_points):
-    x, y, z = Make3DCloudOfPoints(number_of_points)
+    x = Make3DCloudOfPoints(number_of_points)
+    y = x * 2 + 1 + np.random.random(number_of_points) * 3
+    z = 2 * x + 3 * y + np.random.random(number_of_points) * 6
     matrix = np.dstack((x, y, z))
+    centered_matrix = np.dstack((x - x.mean(), y - y.mean(), z - z.mean()))
+    covmat = np.cov((x - x.mean(), y - y.mean(), z - z.mean()))
+    print(covmat)
+    eigenvalues, eigenvectors = LA.eig(covmat)
+    print(eigenvectors)
     fig = plt.figure(figsize=(4, 4))
     ax = fig.add_subplot(111, projection='3d')
     ax.scatter(x, y, z)
-    plt.arrow(np.mean(x), np.mean(y), np.mean(z), dx, dy, dz)
+    ax.plot([np.mean(x), np.mean(x) + eigenvectors[0][0]], [np.mean(y), np.mean(y) + eigenvectors[1][0]], zs=[np.mean(z), np.mean(z) + eigenvectors[2][0]], color='green')
+    ax.plot([np.mean(x), np.mean(x) + eigenvectors[0][1]], [np.mean(y), np.mean(y) + eigenvectors[1][1]],
+            zs=[np.mean(z), np.mean(z) + eigenvectors[2][1]], color='orange')
+    ax.plot([np.mean(x), np.mean(x) + eigenvectors[0][2]], [np.mean(y), np.mean(y) + eigenvectors[1][2]],
+            zs=[np.mean(z), np.mean(z) + eigenvectors[2][2]], color='purple')
     plt.show()
     return 0
 if __name__ == '__main__':

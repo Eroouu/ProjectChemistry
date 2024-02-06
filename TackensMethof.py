@@ -10,6 +10,7 @@ import seaborn as sns
 from numpy import linalg as LA
 import pandas as pd
 from scipy.linalg import svd
+from sklearn.decomposition import PCA
 
 #функция анализирует множество G и выдает сколько по итогу в нем элементов
 def HowManyElementsInG(vector, n, e):
@@ -57,6 +58,8 @@ def Making_Covar_Matrix(time_series, k):
             C[j, i] = C[i, j]
     #print(np.trace(C))
     return C
+def Making_Covar_Matrix_For_Separeted_Vectors(matrix, k):
+    return 0
 
 def Covar_Matrix_Inf(C, k):
     plt.figure(figsize=(9, 7), dpi=80)
