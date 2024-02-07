@@ -83,7 +83,7 @@ def TryingWithRandowValue():#функция проверяет значения 
 
 def MakePlotsOfComponentsValue(full_series, k, how_many_k_show, ind_start, ind_end):
     series = np.array(full_series[ind_start:ind_end])
-    vector_projection = tm.MakingArrayOfComponentsValue(series, k)
+    vector_projection = tm.MakingArrayOfComponentsValue_2(series, k)
     for i in range(how_many_k_show):
         plt.plot(vector_projection[i], label=f"Компонента = {i}")
         plt.legend()
@@ -105,7 +105,8 @@ def ExperimentIn3Dimension(number_of_points):
     fig = plt.figure(figsize=(4, 4))
     ax = fig.add_subplot(111, projection='3d')
     ax.scatter(x, y, z)
-    ax.plot([np.mean(x), np.mean(x) + eigenvectors[0][0]], [np.mean(y), np.mean(y) + eigenvectors[1][0]], zs=[np.mean(z), np.mean(z) + eigenvectors[2][0]], color='green')
+    ax.plot([np.mean(x), np.mean(x) + eigenvectors[0][0]], [np.mean(y), np.mean(y) + eigenvectors[1][0]],
+            zs=[np.mean(z), np.mean(z) + eigenvectors[2][0]], color='green')
     ax.plot([np.mean(x), np.mean(x) + eigenvectors[0][1]], [np.mean(y), np.mean(y) + eigenvectors[1][1]],
             zs=[np.mean(z), np.mean(z) + eigenvectors[2][1]], color='orange')
     ax.plot([np.mean(x), np.mean(x) + eigenvectors[0][2]], [np.mean(y), np.mean(y) + eigenvectors[1][2]],
@@ -123,5 +124,5 @@ if __name__ == '__main__':
     #CheckingTheProbabilityToAnalis(Xenon_Model(-0.877, 0.257, 1.8, -0.005, 10000), 5, 4, 20, 1, 1000, 2000)
     #CheckingTheProbabilityToAnalis(Xenon_Model(-0.877, 0.257, 1.49, -0.138, 10000), 5, 4, 20, 1, 1000, 2000)
     #TryToFindMC_2(FindFileFrom('Алюминий 2 серия.xlsx', 2, 2), 10, 5500, 8500)
-    #MakePlotsOfComponentsValue(FindFileFrom('Алюминий 2 серия.xlsx', 2, 2), 300, 4, 5500, 8500)
-    ExperimentIn3Dimension(100)
+    MakePlotsOfComponentsValue(FindFileFrom('Алюминий 2 серия.xlsx', 2, 2), 300, 1, 5500, 8500)
+    #ExperimentIn3Dimension(100)

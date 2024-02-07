@@ -138,7 +138,6 @@ def MakingNewVectorsInKDimension(time_series, C, k):
             tt.append(np.dot(t, eigenvectors[j]))
         temp_series.append(tt)
     return np.array(temp_series)
-
 def MakingArrayOfComponentsValue(time_series, k):
     c = Making_Covar_Matrix(time_series, k)
     eigenvalues, eigenvectors = LA.eig(c)
@@ -146,4 +145,17 @@ def MakingArrayOfComponentsValue(time_series, k):
     vector_projection = []
     for i in range(k):
         vector_projection.append([np.dot(vectors[j][0:k], eigenvectors[i]) for j in range(k)])
+    return vector_projection
+
+def MakingArrayOfComponentsValue_2(time_series, k):
+    vectors = np.array([time_series[i * 100:i * 100 + 100] - np.mean(time_series) for i in range(len(time_series) // 100)])
+    print(len(vectors[0, 0:k]))
+    c = np.cov(vectors)
+    eigenvalues, eigenvectors = LA.eig(c)
+    vector_projection = []
+    for i in range(len(time_series) // 100):
+        #vector_projection.append([np.dot(vectors[j][0:k], eigenvectors[0:k][j]) for j in range(len(time_series) // 100)])
+        #print(len(vectors[i, 0:k]), vectors[i, 0:k])
+        #print(len(eigenvectors[0:k, i]), eigenvectors[0:k, i])
+        print('ku')
     return vector_projection
