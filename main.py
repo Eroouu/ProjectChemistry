@@ -83,7 +83,7 @@ def TryingWithRandowValue():#функция проверяет значения 
 
 def MakePlotsOfComponentsValue(full_series, k, how_many_k_show, ind_start, ind_end):
     series = np.array(full_series[ind_start:ind_end])
-    vector_projection = tm.MakingArrayOfComponentsValue_2(series, k)
+    vector_projection = tm.MakingArrayOfComponentsValue_2(series,  k)
     for i in range(how_many_k_show):
         plt.plot(vector_projection[i], label=f"Компонента = {i}")
         plt.legend()
@@ -124,5 +124,5 @@ if __name__ == '__main__':
     #CheckingTheProbabilityToAnalis(Xenon_Model(-0.877, 0.257, 1.8, -0.005, 10000), 5, 4, 20, 1, 1000, 2000)
     #CheckingTheProbabilityToAnalis(Xenon_Model(-0.877, 0.257, 1.49, -0.138, 10000), 5, 4, 20, 1, 1000, 2000)
     #TryToFindMC_2(FindFileFrom('Алюминий 2 серия.xlsx', 2, 2), 10, 5500, 8500)
-    MakePlotsOfComponentsValue(FindFileFrom('Алюминий 2 серия.xlsx', 2, 2), 300, 1, 5500, 8500)
+    MakePlotsOfComponentsValue(FindFileFrom('Алюминий 2 серия.xlsx', 2, 2), 5, 5, 5500, 8500)
     #ExperimentIn3Dimension(100)
