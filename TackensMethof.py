@@ -154,5 +154,6 @@ def MakingArrayOfComponentsValue_2(time_series, k):
     vector_projection = []
     for i in range(len(vectors)):
         vector_projection.append([np.dot(vectors[i, 0:k], eigenvectors[0:k, j]) for j in range(len(time_series) // 100)])
-    print(vector_projection)
+    vector_projection = np.array(vector_projection)
+    print(vector_projection[:, 0:k])
     return vector_projection
