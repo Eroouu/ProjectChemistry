@@ -71,7 +71,8 @@ def Covar_Matrix_Inf(C, k):
     df = pd.DataFrame(eigenvalues)
     print(df)
     x = np.array([i + 1 for i in range(k)])
-    plt.plot(x, np.log(eigenvalues))
+    #plt.plot(x, np.log(eigenvalues[0:k]))
+    plt.plot(x, eigenvalues[0:k])
     plt.title(f"График значений собственных чисел для k = {k}", fontsize=14)
     plt.show()
 
@@ -93,7 +94,7 @@ def The_broken_cane_method(C, k):
 def PCA(time_series,  k):
     data = np.array([time_series[i:i + len(time_series) - k] for i in range(k)])
     npС = np.cov(data, bias=True)
-    c = Making_Covar_Matrix(time_series, k)
+    c = Making_Covar_Matrix((time_series - np.mean(time_series)) / max(max(time_series), abs(min(time_series))), k)
     #plt.plot(MakingNewVectors(time_series, c, k)[:, 1])
     #plt.show()
     #print(C, '\n', npС)
@@ -104,12 +105,12 @@ def PCA(time_series,  k):
 def Making_Covar_Matrix_2(time_series, k):
     n = len(time_series)
     series_mean = np.mean(time_series)
-    C = np.zeros((k, k))
-    for i in range(k):
-        ti = time_series[i * 100:100 + i * 100]
+    C = np.zeros((n // 50, n // 50))
+    for i in range(n // 50):
+        ti = time_series[i * 50:50 + i * 50]
         C[i, i] = np.dot(ti - series_mean, ti - series_mean)
-        for j in range(i + 1, k):
-            tj = time_series[j * 100:100+j * 100]
+        for j in range(i + 1, n // 50):
+            tj = time_series[j * 50:50+j * 50]
             C[i, j] = np.dot(ti - series_mean, tj - series_mean)
             C[j, i] = C[i, j]
     #print(np.trace(C))
@@ -148,7 +149,7 @@ def MakingArrayOfComponentsValue(time_series, k):
     return vector_projection
 
 def MakingArrayOfComponentsValue_2(time_series, k):
-    vectors = np.array([time_series[i * 100:i * 100 + 100] - np.mean(time_series) for i in range(len(time_series) // 100)])
+    vectors = np.array([time_series[i * 50:i * 50 + 50] - np.mean(time_series) for i in range(len(time_series) // 50)])
     print(len(vectors[0, 0:k]))
     c = np.cov(vectors)
     eigenvalues, eigenvectors = LA.eig(c)

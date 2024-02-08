@@ -154,4 +154,4 @@ if __name__ == '__main__':
     #MakePlotsOfComponentsValue(FindFileFrom('Алюминий 2 серия.xlsx', 2, 2), 300, 1, 5500, 8500)
     #ExperimentIn3Dimension(100)
     #CheckingTheProbabilityToAnalis(VanderPol(0.01, 0.01, 1000, 0.5), 10, 6, 30, 1, 1000, 4000)
-    TryToFindMC(VanderPol(0.01, 0.01, 10000, 0.5), 10, 1000, 4000)
+    TryToFindMC_2(VanderPol(0.01, 0.01, 10000, 0.5), 4, 3000, 7000)
