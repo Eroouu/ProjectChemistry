@@ -9,11 +9,11 @@ from numpy import linalg as LA
 from mpl_toolkits.mplot3d import Axes3D
 from sklearn.decomposition import PCA
 
-def FindFileFrom(name,x ,y):
+def FindFileFrom(name, x, y):
     wb = openpyxl.load_workbook(filename=name)
     sheet = wb['1']
     time_series, time_array = [], []
-    while sheet.cell(row=x, column=y).value != None:
+    while sheet.cell(row=x, column=y).value is not None:
         time_series.append(float(sheet.cell(row=x, column=y).value))
         time_array.append(float(sheet.cell(row=x, column=y - 1).value))
         x += 1
@@ -83,7 +83,7 @@ def TryingWithRandowValue():#функция проверяет значения 
 
 def MakePlotsOfComponentsValue(full_series, k, how_many_k_show, ind_start, ind_end):
     series = np.array(full_series[ind_start:ind_end])
-    vector_projection = tm.MakingArrayOfComponentsValue_2(series,  k)
+    vector_projection = tm.MakingArrayOfComponentsValue_2(series, k)
     for i in range(how_many_k_show):
         plt.plot(vector_projection[i], label=f"Компонента = {i}")
         plt.legend()
@@ -113,6 +113,33 @@ def ExperimentIn3Dimension(number_of_points):
             zs=[np.mean(z), np.mean(z) + eigenvectors[2][2]], color='purple')
     plt.show()
     return 0
+
+def VanderPol(x0,x1, n, mu):
+    matrixX = []
+    matrixdX = []
+    matrixX.append(x0)
+    matrixdX.append(x1)
+    h = 100 / n
+    for i in range(n):
+        q0 = mu * (1 - x0**2) * x1 - x0
+        k0 = x1
+        q1 = mu * (1 - (x0+h/2)**2) * (x1 + k0 * h / 2) - (x0+h/2)
+        k1 = x1 + q0 * h / 2
+        q2 = mu * (1 - (x0+h/2)**2) * (x1 + k1 * h / 2) - (x0+h/2)
+        k2 = x1 + q1 * h / 2
+        q3 = mu * (1 - (x0+h)**2) * (x1 + k2 * h) - (x0+h)
+        k3 = x1 + q2 * h
+        x1 = x1 + (q0 + 2 * q1 + 2 * q2 + q3) * h / 6
+        x0 = x0 + (k0 + 2 * k1 + 2 * k2 + k3) * h / 6
+        matrixX.append(x0)
+        matrixdX.append(x1)
+    X = [i for i in range(n + 1)]
+    plt.plot(X, matrixX)
+    plt.show()
+    return np.array(matrixX)
+
+
+
 if __name__ == '__main__':
     #CheckingTheProbabilityToAnalis(FindFileFrom('Алюминий 2 серия.xlsx', 2, 2), 20, 0.005, 5500, 8500)
     #ex4('Алюминий 2 серия.xlsx', 2, 2, 20, 0.0009, 5500, 8500)
@@ -124,5 +151,7 @@ if __name__ == '__main__':
     #CheckingTheProbabilityToAnalis(Xenon_Model(-0.877, 0.257, 1.8, -0.005, 10000), 5, 4, 20, 1, 1000, 2000)
     #CheckingTheProbabilityToAnalis(Xenon_Model(-0.877, 0.257, 1.49, -0.138, 10000), 5, 4, 20, 1, 1000, 2000)
     #TryToFindMC_2(FindFileFrom('Алюминий 2 серия.xlsx', 2, 2), 10, 5500, 8500)
-    MakePlotsOfComponentsValue(FindFileFrom('Алюминий 2 серия.xlsx', 2, 2), 5, 5, 5500, 8500)
+    #MakePlotsOfComponentsValue(FindFileFrom('Алюминий 2 серия.xlsx', 2, 2), 300, 1, 5500, 8500)
     #ExperimentIn3Dimension(100)
+    #CheckingTheProbabilityToAnalis(VanderPol(0.01, 0.01, 1000, 0.5), 10, 6, 30, 1, 1000, 4000)
+    TryToFindMC(VanderPol(0.01, 0.01, 10000, 0.5), 10, 1000, 4000)
