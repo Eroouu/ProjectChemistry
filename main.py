@@ -9,7 +9,8 @@ from numpy import linalg as LA
 from mpl_toolkits.mplot3d import Axes3D
 from sklearn.decomposition import PCA
 
-def FindFileFrom(name, x, y):
+
+def find_file_from(name, x, y):
     wb = openpyxl.load_workbook(filename=name)
     sheet = wb['1']
     time_series, time_array = [], []
@@ -19,24 +20,31 @@ def FindFileFrom(name, x, y):
         x += 1
     return np.array(time_series)
 
-def CheckingTheProbabilityToAnalis(matrix, n, numn, nume, epsilon, ind_start, ind_end):
+
+def check_the_probability_to_analyse(matrix, n, num_n, num_e, epsilon, ind_start, ind_end):
     fig = plt.figure(figsize=(15, 10))
     ax = fig.add_subplot(projection="3d")
-    nt = np.array([n + i * 5 for i in range(numn)])
-    et = np.array([epsilon * 0.85 ** j for j in range(nume)])
-    rez_arr = np.array([[tm.FindSpecFunkValue(matrix[ind_start: ind_end], nt[i], et[j]) for j in range(nume)] for i in range(int(numn))])
-
-    ax.scatter(np.repeat(nt, nume), np.tile(et, numn), rez_arr.ravel())
+    nt = np.array([n + i * 5 for i in range(num_n)])
+    et = np.array([epsilon * 0.85 ** j for j in range(num_e)])
+    rez_arr = np.array([
+        [tm.find_spec_funk_value(matrix[ind_start: ind_end], nt[i], et[j]) for j in range(num_e)]
+        for i in range(int(num_n))
+    ])
+    ax.scatter(np.repeat(nt, num_e), np.tile(et, num_n), rez_arr.ravel())
     ax.set_xlabel("n")
     ax.set_ylabel("e")
     plt.title('grapthics for Cne')
     plt.show()
 
-def ex4(matrix, n, numn, nume, epsilon, ind_start, ind_end):
+
+def ex4(matrix, n, num_n, num_e, epsilon, ind_start, ind_end):
     fig = plt.figure(figsize=(12, 7))
-    nt = np.array([n + i * 15 for i in range(numn)])
-    et = np.array([epsilon * 0.85 ** j for j in range(nume)])
-    rez_arr = np.array([[tm.FindSpecFunkValue(matrix[ind_start: ind_end], nt[i], et[j]) for j in range(nume)] for i in range(int(numn))])
+    nt = np.array([n + i * 15 for i in range(num_n)])
+    et = np.array([epsilon * 0.85 ** j for j in range(num_e)])
+    rez_arr = np.array([
+        [tm.find_spec_funk_value(matrix[ind_start: ind_end], nt[i], et[j]) for j in range(num_e)]
+        for i in range(int(num_n))
+    ])
     plt.plot(et, rez_arr[0], 'r', label='n = 20')
     plt.plot(et, rez_arr[1], 'g', label='n = 35')
     plt.plot(et, rez_arr[2], 'b', label='n = 50')
@@ -45,26 +53,33 @@ def ex4(matrix, n, numn, nume, epsilon, ind_start, ind_end):
     plt.legend(bbox_to_anchor=(1.05, 2), loc=2, borderaxespad=0.)
     plt.show()
 
-def TryToFindMC(full_series, k, ind_start, ind_end):
+
+def try_to_find_main_components(full_series, k, ind_start, ind_end):
     matrix = np.array(full_series[ind_start:ind_end])
     tm.PCA(matrix, k)
 
-def RandomSeries(a, b, length):
+
+def random_series(a, b, length):
     return np.random.rand(length) * (b - a) + a
 
-def Logistic_Model(x0,mu, numx):
-    #mu = 4
+
+def logistic_model(x0, mu, numx):
+    """
+    :param x0:
+    :param mu:
+    :param numx:
+    :return:
+    """
     massive = [x0]
     for i in range(numx):
-      x1 = mu * x0 * (1 - x0)
-      massive.append(x1)
-      x0 = x1
+        x1 = mu * x0 * (1 - x0)
+        massive.append(x1)
+        x0 = x1
     return np.array(massive)
 
-def Xenon_Model(x0,x1,a,b, n):
-    massive = []
-    massive.append(x0)
-    massive.append(x1)
+
+def xenon_model(x0, x1, a, b, n):
+    massive = [x0, x1]
     print(x0)
     print(x1)
     for i in range(n):
@@ -74,26 +89,35 @@ def Xenon_Model(x0,x1,a,b, n):
         x1 = x2
     return np.array(massive)
 
-def TryToFindMC_2(full_series, k, ind_start, ind_end):
+
+def try_to_find_main_components_2(full_series, k, ind_start, ind_end):
     matrix = np.array(full_series[ind_start:ind_end])
     tm.PCA_2(matrix, k)
 
-def TryingWithRandowValue():#функция проверяет значения Cne|logn + e и тд на рандомном ряде
-    CheckingTheProbabilityToAnalis(RandomSeries(0, 1, 10000), 5, 4, 10, 1, 1000, 2000)
 
-def MakePlotsOfComponentsValue(full_series, k, how_many_k_show, ind_start, ind_end):
+def trying_with_random_value():
+    """
+    функция проверяет значения Cne|logn + e и тд на рандомном ряде
+    :return:
+    """
+    check_the_probability_to_analyse(random_series(0, 1, 10000), 5, 4, 10, 1, 1000, 2000)
+
+
+def make_plots_of_components_value(full_series, k, how_many_k_show, ind_start, ind_end):
     series = np.array(full_series[ind_start:ind_end])
-    vector_projection = tm.MakingArrayOfComponentsValue_2(series, k)
+    vector_projection = tm.make_array_of_components_value_2(series, k)
     for i in range(how_many_k_show):
         plt.plot(vector_projection[i], label=f"Компонента = {i}")
         plt.legend()
         plt.show()
 
-def Make3DCloudOfPoints(number_of_points):
+
+def make_3d_cloud_of_points(number_of_points):
     return np.random.random(number_of_points)
 
-def ExperimentIn3Dimension(number_of_points):
-    x = Make3DCloudOfPoints(number_of_points)
+
+def experiment_in_3_dimension(number_of_points):
+    x = make_3d_cloud_of_points(number_of_points)
     y = x * 2 + 1 + np.random.random(number_of_points) * 3
     z = 2 * x + 3 * y + np.random.random(number_of_points) * 6
     matrix = np.dstack((x, y, z))
@@ -114,11 +138,12 @@ def ExperimentIn3Dimension(number_of_points):
     plt.show()
     return 0
 
-def VanderPol(x0,x1, n, mu):
-    matrixX = []
-    matrixdX = []
-    matrixX.append(x0)
-    matrixdX.append(x1)
+
+def van_der_pol(x0, x1, n, mu):
+    matrix_x = []
+    matrix_dx = []
+    matrix_x.append(x0)
+    matrix_dx.append(x1)
     h = 100 / n
     for i in range(n):
         q0 = mu * (1 - x0**2) * x1 - x0
@@ -131,27 +156,28 @@ def VanderPol(x0,x1, n, mu):
         k3 = x1 + q2 * h
         x1 = x1 + (q0 + 2 * q1 + 2 * q2 + q3) * h / 6
         x0 = x0 + (k0 + 2 * k1 + 2 * k2 + k3) * h / 6
-        matrixX.append(x0)
-        matrixdX.append(x1)
-    X = [i for i in range(n + 1)]
-    plt.plot(X, matrixX)
+        matrix_x.append(x0)
+        matrix_dx.append(x1)
+    x = [i for i in range(n + 1)]
+    plt.plot(x, matrix_x)
     plt.show()
-    return np.array(matrixX)
-
+    return np.array(matrix_x)
 
 
 if __name__ == '__main__':
-    #CheckingTheProbabilityToAnalis(FindFileFrom('Алюминий 2 серия.xlsx', 2, 2), 20, 0.005, 5500, 8500)
-    #ex4('Алюминий 2 серия.xlsx', 2, 2, 20, 0.0009, 5500, 8500)
-    #TryToFindMC(FindFileFrom('Алюминий 2 серия.xlsx', 2, 2), 5, 5500, 8500)
-    #TryToFindMC(RandomSeries(10000), 5, 5500, 8500)
-    #TryingWithRandowValue()
-    #ex4(Logistic_Model(0.2,10000), 10, 1, 1, 0.001, 100, 1000)
-    #CheckingTheProbabilityToAnalis(Logistic_Model(0.2, 4, 10000), 3, 2, 20, 1, 1000, 2000)
-    #CheckingTheProbabilityToAnalis(Xenon_Model(-0.877, 0.257, 1.8, -0.005, 10000), 5, 4, 20, 1, 1000, 2000)
-    #CheckingTheProbabilityToAnalis(Xenon_Model(-0.877, 0.257, 1.49, -0.138, 10000), 5, 4, 20, 1, 1000, 2000)
-    #TryToFindMC_2(FindFileFrom('Алюминий 2 серия.xlsx', 2, 2), 10, 5500, 8500)
-    #MakePlotsOfComponentsValue(FindFileFrom('Алюминий 2 серия.xlsx', 2, 2), 300, 1, 5500, 8500)
-    #ExperimentIn3Dimension(100)
-    #CheckingTheProbabilityToAnalis(VanderPol(0.01, 0.01, 1000, 0.5), 10, 6, 30, 1, 1000, 4000)
-    TryToFindMC_2(VanderPol(0.01, 0.01, 10000, 0.5), 4, 3000, 7000)
+    '''
+    check_the_probability_to_analyse(find_file_from('Алюминий 2 серия.xlsx', 2, 2), 20, 0.005, 5500, 8500)
+    ex4('Алюминий 2 серия.xlsx', 2, 2, 20, 0.0009, 5500, 8500)
+    try_to_find_main_components(find_file_from('Алюминий 2 серия.xlsx', 2, 2), 5, 5500, 8500)
+    try_to_find_main_components(random_series(10000), 5, 5500, 8500)
+    trying_with_random_value()
+    ex4(Logistic_Model(0.2,10000), 10, 1, 1, 0.001, 100, 1000)
+    check_the_probability_to_analyse(logistic_model(0.2, 4, 10000), 3, 2, 20, 1, 1000, 2000)
+    check_the_probability_to_analyse(xenon_model(-0.877, 0.257, 1.8, -0.005, 10000), 5, 4, 20, 1, 1000, 2000)
+    check_the_probability_to_analyse(xenon_model(-0.877, 0.257, 1.49, -0.138, 10000), 5, 4, 20, 1, 1000, 2000)
+    try_to_find_main_components_2(find_file_from('Алюминий 2 серия.xlsx', 2, 2), 10, 5500, 8500)
+    make_plots_of_components_value(find_file_from('Алюминий 2 серия.xlsx', 2, 2), 300, 1, 5500, 8500)
+    experiment_in_3_dimension(100)
+    check_the_probability_to_analyse(van_der_pol(0.01, 0.01, 1000, 0.5), 10, 6, 30, 1, 1000, 4000)
+    '''
+    try_to_find_main_components_2(van_der_pol(0.01, 0.01, 10000, 0.5), 4, 3000, 7000)

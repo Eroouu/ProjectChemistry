@@ -290,7 +290,7 @@ def FindHurstKoefInMatrix(name, x_start, y_start):
     matrix_hurst = []
     for i in range(len(matrix)):
         matrix_hurst.append(HurstKoef(matrix[i]))
-    print(f'count of nember in Cne = {tk.HowManyElementsInG(np.array(matrix[0]), n, epsilon)}')
+    print(f'count of nember in Cne = {tk.how_many_elements_in_G(np.array(matrix[0]), n, epsilon)}')
     Make_file(matrix_hurst, 'HurstColumn' + name)
     print(f'find h koef for file {name}')
     return matrix[0]
