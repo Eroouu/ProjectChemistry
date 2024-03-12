@@ -85,9 +85,9 @@ def the_broken_cane_method(covmat, k):
     t = [1 / i for i in range(1, k + 1)]
     length = np.array([sum(t[i:]) / k for i in range(k)])
     dfdata = {
-        'lambda/trC': eigenvalues / trace_c,
+        'lambda/trC': eigenvalues[0: k] / trace_c,
         'li': length,
-        'сравнение 1 > 2': np.greater(eigenvalues / trace_c, length)
+        'сравнение 1 > 2': np.greater(eigenvalues[0: k] / trace_c, length)
     }
     df = pd.DataFrame(dfdata)
     print('\n', df)
@@ -123,7 +123,7 @@ def making_covar_matrix_2(time_series):
 
 
 def PCA_2(time_series, n):
-    covmat = making_covar_matrix_2(time_series, n)
+    covmat = making_covar_matrix_2(time_series)
     covar_matrix_information(covmat, n)
     the_broken_cane_method(covmat, n)
     return 0

@@ -140,10 +140,12 @@ def experiment_in_3_dimension(number_of_points):
 
 
 def van_der_pol(x0, x1, n, mu):
+    matrix_x_dx = []
     matrix_x = []
     matrix_dx = []
     matrix_x.append(x0)
     matrix_dx.append(x1)
+    matrix_x_dx.append(x0 + x1)
     h = 100 / n
     for i in range(n):
         q0 = mu * (1 - x0**2) * x1 - x0
@@ -158,11 +160,22 @@ def van_der_pol(x0, x1, n, mu):
         x0 = x0 + (k0 + 2 * k1 + 2 * k2 + k3) * h / 6
         matrix_x.append(x0)
         matrix_dx.append(x1)
+        matrix_x_dx.append(x0 + x1)
     x = [i for i in range(n + 1)]
     plt.plot(x, matrix_x)
     plt.show()
     return np.array(matrix_x)
 
+def Ricker(x0, a, n):
+    matrix = []
+    matrix.append(x0)
+    for i in range(n):
+        x0 = a*x0*math.exp(-x0)
+        matrix.append(x0)
+    x = [i for i in range(n + 1)]
+    plt.plot(x, matrix)
+    plt.show()
+    return np.array(matrix)
 
 if __name__ == '__main__':
     '''
@@ -180,4 +193,5 @@ if __name__ == '__main__':
     experiment_in_3_dimension(100)
     check_the_probability_to_analyse(van_der_pol(0.01, 0.01, 1000, 0.5), 10, 6, 30, 1, 1000, 4000)
     '''
-    try_to_find_main_components_2(van_der_pol(0.01, 0.01, 10000, 0.5), 4, 3000, 7000)
+    #try_to_find_main_components_2(van_der_pol(0.01, 0.01, 10000, 0.5), 4 , 0, 2000)
+    try_to_find_main_components_2(Ricker(1,14.77, 10000), 4, 0, 2000)
