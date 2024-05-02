@@ -96,7 +96,7 @@ def the_broken_cane_method(covmat, k):
 
 def PCA(time_series,  k):
     data = np.array([time_series[i:i + len(time_series) - k] for i in range(k)])
-    npcovmatrix = np.cov(data, bias=True)
+    npcov_matrix = np.cov(data, bias=True)
     c = making_covar_matrix((time_series - np.mean(time_series)) / max(max(time_series), abs(min(time_series))), k)
     '''
     #plt.plot(MakingNewVectors(time_series, c, k)[:, 1])

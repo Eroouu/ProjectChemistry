@@ -21,7 +21,7 @@ def find_file_from(name, x, y):
     return np.array(time_series)
 
 
-def check_the_probability_to_analyse(matrix, n, num_n, num_e, epsilon, ind_start, ind_end):
+def check_the_probability_to_analyse(matrix: object, n: object, num_n: object, num_e: object, epsilon: object, ind_start: object, ind_end: object) -> object:
     fig = plt.figure(figsize=(15, 10))
     ax = fig.add_subplot(projection="3d")
     nt = np.array([n + i * 5 for i in range(num_n)])
@@ -75,6 +75,9 @@ def logistic_model(x0, mu, numx):
         x1 = mu * x0 * (1 - x0)
         massive.append(x1)
         x0 = x1
+    x = [i for i in range(numx+1)]
+    plt.plot(x, np.array(massive))
+    plt.show()
     return np.array(massive)
 
 
@@ -87,6 +90,8 @@ def xenon_model(x0, x1, a, b, n):
         massive.append(x2)
         x0 = x1
         x1 = x2
+    plt.plot(massive)
+    plt.show()
     return np.array(massive)
 
 
@@ -100,12 +105,12 @@ def trying_with_random_value():
     функция проверяет значения Cne|logn + e и тд на рандомном ряде
     :return:
     """
-    check_the_probability_to_analyse(random_series(0, 1, 10000), 5, 4, 10, 1, 1000, 2000)
+    check_the_probability_to_analyse(random_series(0, 1, 10000), 5, 4, 10, 1, 1000, 3000)
 
 
 def make_plots_of_components_value(full_series, k, how_many_k_show, ind_start, ind_end):
     series = np.array(full_series[ind_start:ind_end])
-    vector_projection = tm.make_array_of_components_value_2(series, k)
+    vector_projection = tm.make_array_of_components_value(series, k)
     for i in range(how_many_k_show):
         plt.plot(vector_projection[i], label=f"Компонента = {i}")
         plt.legend()
@@ -140,12 +145,10 @@ def experiment_in_3_dimension(number_of_points):
 
 
 def van_der_pol(x0, x1, n, mu):
-    matrix_x_dx = []
     matrix_x = []
     matrix_dx = []
     matrix_x.append(x0)
     matrix_dx.append(x1)
-    matrix_x_dx.append(x0 + x1)
     h = 100 / n
     for i in range(n):
         q0 = mu * (1 - x0**2) * x1 - x0
@@ -160,23 +163,21 @@ def van_der_pol(x0, x1, n, mu):
         x0 = x0 + (k0 + 2 * k1 + 2 * k2 + k3) * h / 6
         matrix_x.append(x0)
         matrix_dx.append(x1)
-        matrix_x_dx.append(x0 + x1)
     x = [i for i in range(n + 1)]
     plt.plot(x, matrix_x)
     plt.show()
     return np.array(matrix_x)
 
-def Ricker(x0, a, n):
-    matrix = []
-    matrix.append(x0)
-    for i in range(n):
-        x0 = a*x0*math.exp(-x0)
-        matrix.append(x0)
-    x = [i for i in range(n + 1)]
-    plt.plot(x, matrix)
+def func_of_circle(x0, x1, r, n ):
+    points_x = np.array([(x0 + r * np.cos(i/4)) for i in range(n)])
+    points_y =np.array([(x1 + r * np.sin(i/4)) for i in range(n)])
+    rez = np.sin(points_x) + points_y
+    plt.scatter(points_x, points_y)
     plt.show()
-    return np.array(matrix)
-
+    plt.plot(np.sin(points_x))
+    plt.plot(points_y)
+    plt.show()
+    return rez
 if __name__ == '__main__':
     '''
     check_the_probability_to_analyse(find_file_from('Алюминий 2 серия.xlsx', 2, 2), 20, 0.005, 5500, 8500)
@@ -193,5 +194,10 @@ if __name__ == '__main__':
     experiment_in_3_dimension(100)
     check_the_probability_to_analyse(van_der_pol(0.01, 0.01, 1000, 0.5), 10, 6, 30, 1, 1000, 4000)
     '''
-    #try_to_find_main_components_2(van_der_pol(0.01, 0.01, 10000, 0.5), 4 , 0, 2000)
-    try_to_find_main_components_2(Ricker(1,14.77, 10000), 4, 0, 2000)
+    #check_the_probability_to_analyse(van_der_pol(0.01, 0.01, 1000, 0.5), 10, 6, 30, 1, 100, 400)
+    #check_the_probability_to_analyse(xenon_model(-0.877, 0.257, 1.8, -0.005, 10000), 5, 4, 20, 0.2, 1000, 2000)
+    #try_to_find_main_components_2(van_der_pol(0.01, 0.01, 10000, 0.5), 4, 3000, 7000)
+    #try_to_find_main_components_2(find_file_from('Алюминий 2 серия.xlsx', 2, 2), 10, 5500, 8500)
+    #experiment_in_3_dimension(100)
+    #make_plots_of_components_value(find_file_from('Алюминий 2 серия.xlsx', 2, 2), 300, 1, 5500, 8500)
+    make_plots_of_components_value(func_of_circle(0.1, 2, 3, 1000), 40, 2, 0, 1000)
