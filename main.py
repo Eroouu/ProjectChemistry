@@ -5,6 +5,8 @@ import scipy
 import numpy as np
 import matplotlib.pyplot as plt
 import TackensMethof as tm
+import reaction_diffusion as rd
+import proved_rd as prd
 from numpy import linalg as LA
 from mpl_toolkits.mplot3d import Axes3D
 from sklearn.decomposition import PCA
@@ -58,6 +60,9 @@ def try_to_find_main_components(full_series, k, ind_start, ind_end):
     matrix = np.array(full_series[ind_start:ind_end])
     tm.PCA(matrix, k)
 
+def try_to_find_main_components_with_def_length(full_series, k, ind_start, ind_end):
+    matrix = np.array(full_series[ind_start:ind_end])
+    tm.PCA_with_def_length(matrix, k)
 
 def random_series(a, b, length):
     return np.random.rand(length) * (b - a) + a
@@ -178,6 +183,21 @@ def func_of_circle(x0, x1, r, n ):
     plt.plot(points_y)
     plt.show()
     return rez
+
+def func_of_circle_2(x0, x1, x2,  r, n ):
+    points_x = np.array([(x0 + r * np.cos(i/2)) for i in range(n)])
+    points_y =np.array([(x1 + r * np.sin(i/4)) for i in range(n)])
+    points_z = np.array([(x2 + r * np.log(i)) for i in range(1, n+1)])
+    rez = np.sin(points_x) + points_y  + points_z
+    fig = plt.figure()
+    ax = plt.axes(projection='3d')
+    ax.scatter(points_x, points_y, points_z)
+    plt.show()
+    plt.plot(np.sin(points_x))
+    plt.plot(points_y)
+    plt.plot(points_z)
+    plt.show()
+    return rez
 if __name__ == '__main__':
     '''
     check_the_probability_to_analyse(find_file_from('Алюминий 2 серия.xlsx', 2, 2), 20, 0.005, 5500, 8500)
@@ -197,7 +217,18 @@ if __name__ == '__main__':
     #check_the_probability_to_analyse(van_der_pol(0.01, 0.01, 1000, 0.5), 10, 6, 30, 1, 100, 400)
     #check_the_probability_to_analyse(xenon_model(-0.877, 0.257, 1.8, -0.005, 10000), 5, 4, 20, 0.2, 1000, 2000)
     #try_to_find_main_components_2(van_der_pol(0.01, 0.01, 10000, 0.5), 4, 3000, 7000)
-    #try_to_find_main_components_2(find_file_from('Алюминий 2 серия.xlsx', 2, 2), 10, 5500, 8500)
+    #try_to_find_main_components_2(find_file_from('Алюминий 2 серия.xlsx', 2, 2), 400, 5500, 8500)
     #experiment_in_3_dimension(100)
     #make_plots_of_components_value(find_file_from('Алюминий 2 серия.xlsx', 2, 2), 300, 1, 5500, 8500)
-    make_plots_of_components_value(func_of_circle(0.1, 2, 3, 1000), 40, 2, 0, 1000)
+    #make_plots_of_components_value(func_of_circle(0.1, 2, 3, 1000), 40, 2, 0, 1000)
+    #check_the_probability_to_analyse(func_of_circle_2(0.1, 2, -1,  3, 1000), 5, 4, 20, 1, 0, 1000)
+    #try_to_find_main_components(func_of_circle_2(0.1, 2, -1,  3, 1000), 100, 0, 10000)
+    #make_plots_of_components_value(func_of_circle_2(0.1, 2, -1,  3, 100), 50, 3, 0, 100)#алгоритм не восстанавливает в достаточнсой степени координаты на фазовом пространстве
+    #check_the_probability_to_analyse(rd.example2(), 5, 4, 20, 1, 0, 1000)
+    #try_to_find_main_components(rd.example1(), 100, 0, 10000)
+    #check_the_probability_to_analyse(prd.exercise(100, 2000), 10, 4, 20, 0.5, 0, 1000)
+    #check_the_probability_to_analyse(prd.exercise_1d(100, 2000), 10, 4, 20, 0.8, 0, 1000)
+    #try_to_find_main_components(prd.exercise(100, 2000), 100, 0, 2000)
+    #check_the_probability_to_analyse(find_file_from('Алюминий 2 серия.xlsx', 2, 2), 10, 4, 20, 0.05, 5500, 8500)
+    try_to_find_main_components(find_file_from('Алюминий 2 серия.xlsx', 2, 2), 400, 5500, 8500)
+    #check_the_probability_to_analyse(logistic_model(0.2, 3.7, 10000), 3, 6, 20, 0.5, 1000, 2000)

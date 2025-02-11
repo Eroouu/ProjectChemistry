@@ -1,11 +1,8 @@
 from math import log
 import numpy as np
 import matplotlib.pyplot as plt
-import seaborn as sns
 from numpy import linalg as LA
 import pandas as pd
-from scipy.linalg import svd
-from sklearn.decomposition import PCA
 
 
 def how_many_elements_in_g(vector, n, e):
@@ -64,10 +61,10 @@ def making_covar_matrix(time_series, k):
 
 
 def covar_matrix_information(covmat, k):
-    plt.figure(figsize=(9, 7), dpi=80)
-    sns.heatmap(covmat, annot=True, fmt='g', xticklabels=[i for i in range(k)], yticklabels=[i for i in range(k)])
-    plt.title(f"Матрица ковариации для k = {k}", fontsize=18)
-    plt.show()
+    #plt.figure(figsize=(9, 7), dpi=80)
+    #sns.heatmap(covmat, annot=True, fmt='g', xticklabels=[i for i in range(k)], yticklabels=[i for i in range(k)])
+    #plt.title(f"Матрица ковариации для k = {k}", fontsize=18)
+    #plt.show()
     eigenvalues, eigenvectors = LA.eig(covmat)
     print(f'собственные значения матрицы для k={k}')
     df = pd.DataFrame(eigenvalues)
